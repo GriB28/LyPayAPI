@@ -2,8 +2,10 @@ from os import mkdir
 from os.path import exists
 
 from .__config__ import CONFIGURATION, VERSION, NAME, BUILD
+
 from . import user
 from . import firewall
+from . import promo
 
 
 if not exists(CONFIGURATION.CACHEPATH):

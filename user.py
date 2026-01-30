@@ -6,7 +6,7 @@ from os.path import getmtime, exists
 from os import remove
 
 from .__config__ import CONFIGURATION
-from .__exceptions__ import APIError, UserNotFound
+from .__exceptions__ import APIError
 
 host = CONFIGURATION.HOST
 port = CONFIGURATION.PORT
@@ -19,10 +19,22 @@ ssl_context.verify_mode = CERT_NONE
 
 async def info(ID: int) -> dict:
     """
-    Запрос данных о пользователе
+    Запрос данных о пользователе в следующем формате:
+
+    | {
+    | "ID": int,
+    | "name": str,
+    | "login": str | None,
+    | "password": str | None,
+    | "class": str,
+    | "email": str,
+    | "tag": str | None,
+    | "balance": int,
+    | "owner": int
+    | }
 
     :param ID: ID пользователя
-    :return: словарь со строкой таблицы USERS
+    :return: словарь с данными пользователя из таблицы database.USERS
     """
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
@@ -31,7 +43,7 @@ async def info(ID: int) -> dict:
             if response.status // 100 == 2:
                 return json
 
-            raise UserNotFound(info, response, json)
+            raise APIError.get(info, response, json)
 
 
 async def balance(ID: int) -> int:
@@ -45,22 +57,25 @@ async def balance(ID: int) -> int:
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(f"{host}:{port}/user/balance?ID={ID}") as response:
             json = await response.json()
-            if response.status // 100 == 2:
-                return json["balance"]
+            if response.status >= 400:
+                raise APIError.get(balance, response, json)
 
-            raise UserNotFound(balance, response, json)
+            return json["balance"]
 
 
-async def _download_qr(ID: int, path: str) -> None:
+async def _request_qr(ID: int, path: str) -> None:
+    """
+    Внутренняя функция, не рекомендуется использовать без обёртки `qr()`
+    """
+
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(f"{host}:{port}/user/qr/get?ID={ID}") as response:
-            if response.status // 100 == 2:
-                async with a_open(path, mode='wb') as f:
-                    async for chunk in response.content.iter_chunked(CONFIGURATION.CHUNK_SIZE):
-                        await f.write(chunk)
-                return
+            if response.status >= 400:
+                raise APIError.get(_request_qr, response, await response.json())
 
-            raise APIError(_download_qr, response, await response.json())
+            async with a_open(path, mode='wb') as f:
+                async for chunk in response.content.iter_chunked(CONFIGURATION.CHUNK_SIZE):
+                    await f.write(chunk)
 
 
 async def qr(ID: int) -> str:
@@ -77,15 +92,16 @@ async def qr(ID: int) -> str:
         async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
             async with session.get(f"{host}:{port}/user/qr/check?ID={ID}&unix={getmtime(path)}") as response:
                 json = await response.json()
-                if response.status // 100 == 2:
-                    if not json["actual"]:
-                        remove(path)
-                    if not json["exists"] or not json["actual"]:
-                        await _download_qr(ID, path)
-                    return path
+                if response.status >= 400:
+                    raise APIError.get(qr, response, json)
 
-                raise APIError(qr, response, json)
+                if not json["actual"]:
+                    remove(path)
+                if not json["exists"] or not json["actual"]:
+                    await _request_qr(ID, path)
+                return path
+
 
     else:
-        await _download_qr(ID, path)
+        await _request_qr(ID, path)
         return path

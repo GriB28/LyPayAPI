@@ -14,15 +14,64 @@ class APIError(Exception):
         self.error_code = json["error"] if json else None
 
     def __str__(self):
-        return f"""
+        return f"""\
 Получен код HTTP{self.status_code} при вызове {self.method}. \
 Сообщение ядра: {self.error_code}.
 """
 
+    @classmethod
+    def get(cls, method, response: ClientResponse, json: dict | None = None) -> APIError:
+        """
+        Автоматический определитель конкретной ошибки
 
-class UserNotFound(APIError):
+        :param method: метод/функция библиотеки
+        :param response: ответ от API
+        :param json: ответ от API в формате JSON
+        :return: экземпляр APIError
+        """
+
+        if json is None or 'message' not in json.keys():
+            pass
+
+        elif json['message'] == 'bad parsing':
+            return BadRequest(method, response, json)
+        elif json['message'] == 'invalid route':
+            return InvalidRoute(method, response, json)
+        elif json['message'] == 'ID not found':
+            return IDNotFound(method, response, json)
+        elif json['message'] == 'ID already exists':
+            return IDAlreadyExists(method, response, json)
+
+        return cls(method, response, json)
+
+
+class IDNotFound(APIError):
     def __str__(self):
-        return f"""
+        return f"""\
 Получен код HTTP{self.status_code} при вызове {self.method}. \
-Сообщение ядра: {self.error_code} (пользователь не был найден).
+Сообщение ядра: {self.error_code} (ID не был найден).
+"""
+
+
+class IDAlreadyExists(APIError):
+    def __str__(self):
+        return f"""\
+Получен код HTTP{self.status_code} при вызове {self.method}. \
+Сообщение ядра: {self.error_code} (ID уже существует).
+"""
+
+
+class BadRequest(APIError):
+    def __str__(self):
+        return f"""\
+Получен код HTTP{self.status_code} при вызове {self.method}. \
+Сообщение ядра: {self.error_code} (ядро не смогло обработать запрос).
+"""
+
+
+class InvalidRoute(APIError):
+    def __str__(self):
+        return f"""\
+Получен код HTTP{self.status_code} при вызове {self.method}. \
+Сообщение ядра: {self.error_code} (выбраный параметр пути некорректен).
 """
