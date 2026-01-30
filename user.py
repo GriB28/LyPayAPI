@@ -8,6 +8,9 @@ from os import remove
 from .__config__ import CONFIGURATION
 from .__exceptions__ import APIError
 
+from . import user_registration as register
+from . import user_balance as balance
+
 host = CONFIGURATION.HOST
 port = CONFIGURATION.PORT
 cache_path = CONFIGURATION.CACHEPATH
@@ -17,7 +20,7 @@ ssl_context.check_hostname = False
 ssl_context.verify_mode = CERT_NONE
 
 
-async def info(ID: int) -> dict:
+async def get(ID: int) -> dict[str, ...]:
     """
     Запрос данных о пользователе в следующем формате:
 
@@ -34,33 +37,32 @@ async def info(ID: int) -> dict:
     | }
 
     :param ID: ID пользователя
-    :return: словарь с данными пользователя из таблицы database.USERS
+    :return: словарь с данными пользователя из таблицы ``database.USERS``
     """
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
-        async with session.get(f"{host}:{port}/user/info?ID={ID}") as response:
-            json = await response.json()
-            if response.status // 100 == 2:
-                return json
-
-            raise APIError.get(info, response, json)
-
-
-async def balance(ID: int) -> int:
-    """
-    Запрос баланса пользователя
-
-    :param ID: ID пользователя
-    :return: число
-    """
-
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
-        async with session.get(f"{host}:{port}/user/balance?ID={ID}") as response:
+        async with session.get(f"{host}:{port}/user/get?ID={ID}") as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(balance, response, json)
+                raise APIError.get(get, response, json)
 
-            return json["balance"]
+            return json
+
+
+async def get_all() -> list[int]:
+    """
+    Запрос всех существующих ID пользователей
+
+    :return: список с ID из таблицы ``database.USERS``
+    """
+
+    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+        async with session.get(f"{host}:{port}/user/get_all") as response:
+            json = await response.json()
+            if response.status >= 400:
+                raise APIError.get(get_all, response, json)
+
+            return json['ids']
 
 
 async def _request_qr(ID: int, path: str) -> None:

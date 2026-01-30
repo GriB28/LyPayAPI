@@ -24,16 +24,16 @@ async def get_all() -> list[dict[str, ...]]:
     | "active": bool
     | }
 
-    :return: список словарей с данными таблицы database.PROMO
+    :return: список словарей с данными таблицы ``database.PROMO``
     """
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(f"{host}:{port}/promo/all") as response:
             json = await response.json()
-            if response.status // 100 == 2:
-                return json['all']
+            if response.status >= 400:
+                raise IDNotFound(get_all, response, json)
 
-            raise IDNotFound(get_all, response, json)
+            return json['all']
 
 
 async def get(ID: str) -> dict:
@@ -49,16 +49,16 @@ async def get(ID: str) -> dict:
     | }
 
     :param ID: ID промокода
-    :return: словарь с данными из таблицы database.PROMO
+    :return: словарь с данными из таблицы ``database.PROMO``
     """
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(f"{host}:{port}/promo/get?ID={ID}") as response:
             json = await response.json()
-            if response.status // 100 == 2:
-                return json
+            if response.status >= 400:
+                raise IDNotFound(get, response, json)
 
-            raise IDNotFound(get, response, json)
+            return json
 
 
 async def add(ID: str, value: int, author: str) -> None:
@@ -74,11 +74,10 @@ async def add(ID: str, value: int, author: str) -> None:
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(f"{host}:{port}/promo/add?ID={ID}&value={value}&author={author}") as response:
             json = await response.json()
-            if response.status // 100 == 2:
-                return
-            elif json["message"] == "ID already exists":
-                raise IDAlreadyExists(edit, response, json)
-            raise APIError(add, response, json)
+            if response.status >= 400:
+                if json["message"] == "ID already exists":
+                    raise IDAlreadyExists(edit, response, json)
+                raise APIError(add, response, json)
 
 
 async def edit(ID: str, value: int | None = None, author: str | None = None, active: bool | None = None) -> None:
@@ -105,6 +104,5 @@ async def edit(ID: str, value: int | None = None, author: str | None = None, act
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(f"{host}:{port}/promo/edit?ID={ID}{args}") as response:
             json = await response.json()
-            if response.status // 100 == 2:
-                return
-            raise APIError(edit, response, json)
+            if response.status >= 400:
+                raise APIError(edit, response, json)

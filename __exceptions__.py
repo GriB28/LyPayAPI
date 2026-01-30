@@ -11,12 +11,13 @@ class APIError(Exception):
         """
         self.method = method.__module__ + '.' + method.__name__
         self.status_code = response.status
-        self.error_code = json["error"] if json else None
+        self.error_code = json["error"] if json is not None else None
+        self.message = json["message"] if json is not None else None
 
     def __str__(self):
         return f"""\
 Получен код HTTP{self.status_code} при вызове {self.method}. \
-Сообщение ядра: {self.error_code}.
+Сообщение ядра: {self.error_code} {f"({self.message})" if self.message is not None else ''}
 """
 
     @classmethod
@@ -37,10 +38,16 @@ class APIError(Exception):
             return BadRequest(method, response, json)
         elif json['message'] == 'invalid route':
             return InvalidRoute(method, response, json)
+        elif json['message'] == 'email not found':
+            return EmailNotFound(method, response, json)
         elif json['message'] == 'ID not found':
             return IDNotFound(method, response, json)
         elif json['message'] == 'ID already exists':
             return IDAlreadyExists(method, response, json)
+        elif json['message'] == 'not enough balance':
+            return NotEnoughBalance(method, response, json)
+        elif json['message'] == 'subzero input':
+            return SubZeroInput(method, response, json)
 
         return cls(method, response, json)
 
@@ -50,6 +57,14 @@ class IDNotFound(APIError):
         return f"""\
 Получен код HTTP{self.status_code} при вызове {self.method}. \
 Сообщение ядра: {self.error_code} (ID не был найден).
+"""
+
+
+class EmailNotFound(APIError):
+    def __str__(self):
+        return f"""\
+Получен код HTTP{self.status_code} при вызове {self.method}. \
+Сообщение ядра: {self.error_code} (эл. почта не была найдена в базе).
 """
 
 
@@ -74,4 +89,20 @@ class InvalidRoute(APIError):
         return f"""\
 Получен код HTTP{self.status_code} при вызове {self.method}. \
 Сообщение ядра: {self.error_code} (выбраный параметр пути некорректен).
+"""
+
+
+class NotEnoughBalance(APIError):
+    def __str__(self):
+        return f"""\
+Получен код HTTP{self.status_code} при вызове {self.method}. \
+Сообщение ядра: {self.error_code} (баланса пользователя недостаточно для оплаты).
+"""
+
+
+class SubZeroInput(APIError):
+    def __str__(self):
+        return f"""\
+Получен код HTTP{self.status_code} при вызове {self.method}. \
+Сообщение ядра: {self.error_code} (в поле для перевода введено число меньше нуля).
 """

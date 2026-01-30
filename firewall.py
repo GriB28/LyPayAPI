@@ -44,7 +44,7 @@ async def entry(ID: int, route: str) -> dict:
 
     :param ID: ID пользователя
     :param route: 'main', 'stores' или 'admins'
-    :return: словарь с данными пользователя из таблицы firewall.STORES
+    :return: словарь с данными пользователя из таблицы ``firewall.STORES``
     """
 
     route = route.strip().lower()
