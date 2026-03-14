@@ -36,7 +36,7 @@ async def get_all() -> list[dict[str, ...]]:
             return json['all']
 
 
-async def get(ID: str) -> dict:
+async def get(ID: str) -> dict[str, ...]:
     """
     Запрос информации по конкретному промокоду.
     Формат данных:

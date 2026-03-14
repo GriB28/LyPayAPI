@@ -31,7 +31,7 @@ async def check(ID: int, route: str) -> bool:
         return False
 
 
-async def entry(ID: int, route: str) -> dict:
+async def entry(ID: int, route: str) -> dict[str, ...]:
     """
     Запрос профиля пользователя в файерволле в формате:
 
