@@ -111,7 +111,6 @@ async def qr(ID: int) -> str:
                     await _request_qr(ID, path)
                 return path
 
-
     else:
         await _request_qr(ID, path)
         return path
