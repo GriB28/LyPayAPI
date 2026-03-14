@@ -43,7 +43,7 @@ async def get(ID: str) -> dict[str, ...]:
 
 async def get_all(storeID: str, active_filter: bool = True) -> list[dict[str, ...]]:
     """
-    Запрос данных обо всех айтемах конкретного магазина. Формат такой же как при вызове `items.get`
+    Запрос данных обо всех айтемах конкретного магазина. Формат такой же как при вызове ``items.get``
 
     :param storeID: ID магазина
     :param active_filter: фильтр, показывающий только активные айтемы (по умолчанию включён)
