@@ -48,7 +48,7 @@ async def add(storeID: str, userID: int) -> None:
                 params={"storeID": storeID, "userID": userID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(get_list, response, await response.json())
+                raise APIError.get(add, response, await response.json())
 
 
 async def remove(storeID: str, userID: int) -> None:
@@ -66,5 +66,4 @@ async def remove(storeID: str, userID: int) -> None:
                 params={"storeID": storeID, "userID": userID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(get_list, response, await response.json())
-
+                raise APIError.get(remove, response, await response.json())
