@@ -30,7 +30,7 @@ async def get(ID: str) -> dict[str, ...]:
     | }
 
     :param ID: ID магазина
-    :return: словарь с данными пользователя из таблицы ``database.STORES``
+    :return: словарь с данными магазина из таблицы ``database.STORES``
     """
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
