@@ -98,7 +98,7 @@ async def remove(itemID: str) -> None:
                 params={"itemID": itemID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(add, response, await response.json())
+                raise APIError.get(remove, response, await response.json())
 
 
 async def edit(itemID: str, name: str | None = None, price: int | None = None) -> str:
