@@ -6,6 +6,8 @@ class CONFIGURATION:
 
     CHUNK_SIZE = 512
 
+    JWT_KEY = "crimsonmoonshinesuponatownthatissmearedinblood-criedthedivagivenintolament"
+
     HOST = "http://localhost"
     PORT = 8128
 
