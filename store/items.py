@@ -113,11 +113,13 @@ async def edit(itemID: str, name: str | None = None, price: int | None = None) -
     """
 
     payload = dict()
-    payload["itemID"] = itemID
     if name is not None:
         payload["name"] = name
     if price is not None:
         payload["price"] = price
+    if len(payload) == 0:
+        raise ValueError("В вызове функции promo.edit должен присутствовать хотя бы один аргумент кроме ID.")
+    payload["itemID"] = itemID
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(
