@@ -57,7 +57,7 @@ async def get_all() -> list[int]:
     """
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
-        async with session.get(f"{host}:{port}/user/get_all") as response:
+        async with session.get(f"{host}:{port}/user/all") as response:
             json = await response.json()
             if response.status >= 400:
                 raise APIError.get(get_all, response, json)
