@@ -72,6 +72,11 @@ class APIError(Exception):
         elif json['message'] == 'bad censor flag: desc':
             return InvalidStoreDescription(method, response, json)
 
+        elif json['message'] == 'bad censor flag: store item name':
+            return InvalidStoreItemName(method, response, json)
+        elif json['message'] == 'bad censor flag: store item price':
+            return InvalidStoreItemPrice(method, response, json)
+
         return cls(method, response, json)
 
 
@@ -133,3 +138,13 @@ class InvalidStoreName(APIError):
 class InvalidStoreDescription(APIError):
     def __str__(self):
         return super().form_str_message("описание магазина не прошло проверку")
+
+
+class InvalidStoreItemName(APIError):
+    def __str__(self):
+        return super().form_str_message("название айтема не прошло проверку")
+
+
+class InvalidStoreItemPrice(APIError):
+    def __str__(self):
+        return super().form_str_message("цена айтема некорректна")

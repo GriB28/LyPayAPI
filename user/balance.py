@@ -57,9 +57,8 @@ async def deposit(ID: int, value: int, agent_id: int | None = None) -> None:
                 f"{host}:{port}/user/deposit",
                 params=payload
         ) as response:
-            json = await response.json()
             if response.status >= 400:
-                raise APIError.get(deposit, response, json)
+                raise APIError.get(deposit, response, await response.json())
 
 
 async def transfer(ID_out: int, ID_in: int | str, amount: int) -> None:
@@ -93,6 +92,5 @@ async def transfer(ID_out: int, ID_in: int | str, amount: int) -> None:
                 f"{host}:{port}/user/transfer",
                 params=payload
         ) as response:
-            json = await response.json()
             if response.status >= 400:
-                raise APIError.get(transfer, response, json)
+                raise APIError.get(transfer, response, await response.json())

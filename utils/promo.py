@@ -36,7 +36,7 @@ async def get_all() -> list[dict[str, ...]]:
             return json['all']
 
 
-async def get(ID: str) -> dict:
+async def get(ID: str) -> dict[str, ...]:
     """
     Запрос информации по конкретному промокоду.
     Формат данных:
@@ -83,11 +83,8 @@ async def add(ID: str, value: int, author: str) -> None:
                     "author": author
                 }
         ) as response:
-            json = await response.json()
             if response.status >= 400:
-                if json["message"] == "ID already exists":
-                    raise IDAlreadyExists(edit, response, json)
-                raise APIError(add, response, json)
+                raise APIError(add, response, await response.json())
 
 
 async def edit(ID: str, value: int | None = None, author: str | None = None, active: bool | None = None) -> None:
@@ -117,6 +114,5 @@ async def edit(ID: str, value: int | None = None, author: str | None = None, act
                 f"{host}:{port}/promo/edit",
                 params=payload
         ) as response:
-            json = await response.json()
             if response.status >= 400:
-                raise APIError(edit, response, json)
+                raise APIError(edit, response, await response.json())
