@@ -1,7 +1,8 @@
 from aiohttp import ClientSession, TCPConnector
 from ssl import create_default_context as ssl_create_default_context, CERT_NONE
 
-from ..scripts import j2
+from jwt import encode as jwt_encode
+
 from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
 
@@ -64,7 +65,7 @@ async def send_email(participant: str, code: str | int, keys: dict[str, ...] | N
 
     payload = dict()
     if keys is not None:
-        payload["keys"] = j2.to_(keys, string_mode=True)
+        payload["keys"] = jwt_encode(keys, CONFIGURATION.JWT_KEY, algorithm="HS256")
     payload["route"] = "shopkeeper"
     payload["email"] = participant
     payload["code"] = code
