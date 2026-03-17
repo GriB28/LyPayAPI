@@ -93,9 +93,9 @@ async def create(storeID: str, customer: int, items: dict[str, int]) -> str:
             return json["generated"]
 
 
-async def deactivate(chequeID: str) -> None:
+async def cancel(chequeID: str) -> None:
     """
-    Функция деактивации чека
+    Функция отмены чека
 
     :param chequeID: ID чека
     :return: ничего (может вызвать ошибку выполнения)
@@ -107,4 +107,4 @@ async def deactivate(chequeID: str) -> None:
                 params={"chequeID": chequeID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(deactivate, response, await response.json())
+                raise APIError.get(cancel, response, await response.json())
