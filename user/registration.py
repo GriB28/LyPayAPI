@@ -1,7 +1,8 @@
 from aiohttp import ClientSession, TCPConnector
 from ssl import create_default_context as ssl_create_default_context, CERT_NONE
 
-from ..scripts import j2
+from jwt import encode as jwt_encode
+
 from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
 
@@ -53,7 +54,7 @@ async def send_email(route: str, participant: str, code: str | int, keys: dict[s
 
     payload = dict()
     if keys is not None:
-        payload["keys"] = j2.to_(keys, string_mode=True)
+        payload["keys"] = jwt_encode(keys, CONFIGURATION.JWT_KEY, algorithm="HS256")
     payload["route"] = route
     payload["email"] = participant
     payload["code"] = code
@@ -64,12 +65,13 @@ async def send_email(route: str, participant: str, code: str | int, keys: dict[s
                 params=payload
         ) as response:
             if response.status >= 400:
-                raise APIError.get(check_email_record, response, await response.json())
+                raise APIError.get(send_email, response, await response.json())
 
 
 async def new(*, name: str, login: str | None, password: str | None, group: str, email: str, tag: str | None, owner_flag: str) -> int:
     """
-    Регистрация нового пользоавтеля
+    Регистрация нового пользователя
+
     :param name: имя (по таблцие ``database.CORPORATION``)
     :param login: логин (тестовая сборка: пропущено)
     :param password: пароль (тестовая сборка: пропущено)
@@ -98,6 +100,6 @@ async def new(*, name: str, login: str | None, password: str | None, group: str,
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(check_email_record, response, json)
+                raise APIError.get(new, response, json)
 
             return json['ID']
