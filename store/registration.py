@@ -88,16 +88,15 @@ async def new(*, storeID: int, name: str, hostID: int, email: str) -> None:
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    payload = dict()
-    payload["name"] = name
-    payload["storeID"] = storeID
-    payload["hostID"] = hostID
-    payload["email"] = email
-
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(
                 f"{host}:{port}/reg/store",
-                params=payload
+                params={
+                    "storeID": storeID,
+                    "name": name,
+                    "hostID": hostID,
+                    "email": email
+                }
         ) as response:
             if response.status >= 400:
                 raise APIError.get(new, response, await response.json())
