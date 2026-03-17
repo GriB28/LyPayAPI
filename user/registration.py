@@ -64,7 +64,7 @@ async def send_email(route: str, participant: str, code: str | int, keys: dict[s
                 params=payload
         ) as response:
             if response.status >= 400:
-                raise APIError.get(check_email_record, response, await response.json())
+                raise APIError.get(send_email, response, await response.json())
 
 
 async def new(*, name: str, login: str | None, password: str | None, group: str, email: str, tag: str | None, owner_flag: str) -> int:
@@ -98,6 +98,6 @@ async def new(*, name: str, login: str | None, password: str | None, group: str,
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(check_email_record, response, json)
+                raise APIError.get(new, response, json)
 
             return json['ID']
