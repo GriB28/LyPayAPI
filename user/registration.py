@@ -69,7 +69,8 @@ async def send_email(route: str, participant: str, code: str | int, keys: dict[s
 
 async def new(*, name: str, login: str | None, password: str | None, group: str, email: str, tag: str | None, owner_flag: str) -> int:
     """
-    Регистрация нового пользоавтеля
+    Регистрация нового пользователя
+
     :param name: имя (по таблцие ``database.CORPORATION``)
     :param login: логин (тестовая сборка: пропущено)
     :param password: пароль (тестовая сборка: пропущено)
