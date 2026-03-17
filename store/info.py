@@ -35,7 +35,7 @@ async def get(ID: str) -> dict[str, ...]:
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(
-                f"{host}:{port}/store/get",
+                f"{host}:{port}/store/info/get",
                 params={"ID": ID}
         ) as response:
             json = await response.json()
@@ -53,7 +53,7 @@ async def get_all() -> list[str]:
     """
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
-        async with session.get(f"{host}:{port}/store/all") as response:
+        async with session.get(f"{host}:{port}/store/info/all") as response:
             json = await response.json()
             if response.status >= 400:
                 raise APIError.get(get_all, response, json)
