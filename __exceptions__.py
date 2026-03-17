@@ -77,6 +77,9 @@ class APIError(Exception):
         elif json['message'] == 'bad censor flag: store item price':
             return InvalidStoreItemPrice(method, response, json)
 
+        elif json['message'] == 'link not found':
+            return StoreFormLinkNotFound(method, response, json)
+
         return cls(method, response, json)
 
 
@@ -148,3 +151,8 @@ class InvalidStoreItemName(APIError):
 class InvalidStoreItemPrice(APIError):
     def __str__(self):
         return super().form_str_message("цена айтема некорректна")
+
+
+class StoreFormLinkNotFound(APIError):
+    def __str__(self):
+        return super().form_str_message("код доступа не найден в базе данных")
