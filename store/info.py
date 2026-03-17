@@ -59,24 +59,3 @@ async def get_all() -> list[str]:
                 raise APIError.get(get_all, response, json)
 
             return json['ids']
-
-
-async def check_link(link: str) -> str:
-    """
-    Проверяет код регистрации магазина
-
-    :param link: код для проверки
-    :return: эл. почту, на которую был прислан этот код. При этом никакие записи не удаляются,
-    происходит только проверка
-    """
-
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
-        async with session.get(
-                f"{host}:{port}/store/info/link",
-                params={"link": link}
-        ) as response:
-            json = await response.json()
-            if response.status >= 400:
-                raise APIError.get(check_link, response, json)
-
-            return json["email"]
