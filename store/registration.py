@@ -60,3 +60,29 @@ async def send_email(participant: str, code: str | int, keys: dict[str, ...] | N
         ) as response:
             if response.status >= 400:
                 raise APIError.get(send_email, response, await response.json())
+
+
+async def new(*, storeID: int, name: str, hostID: int, email: str) -> None:
+    """
+    Регистрация нового магазина (описание по умолчанию -- ``""``)
+
+    :param storeID: ID магазина
+    :param name: название магазина
+    :param hostID: ID владельца магазина
+    :param email: эл. почта владельца магазина
+    :return: ничего (может вызвать ошибку выполнения)
+    """
+
+    payload = dict()
+    payload["name"] = name
+    payload["storeID"] = storeID
+    payload["hostID"] = hostID
+    payload["email"] = email
+
+    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+        async with session.get(
+                f"{host}:{port}/reg/store",
+                params=payload
+        ) as response:
+            if response.status >= 400:
+                raise APIError.get(new, response, await response.json())
