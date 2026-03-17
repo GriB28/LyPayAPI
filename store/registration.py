@@ -36,6 +36,22 @@ async def check_link(link: str) -> str:
             return json["email"]
 
 
+async def get_ID():
+    """
+    Запрашивает свободный ID магазина
+
+    :return: незанятый ID магазина
+    """
+
+    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+        async with session.get(f"{host}:{port}/reg/store_id") as response:
+            json = await response.json()
+            if response.status >= 400:
+                raise APIError.get(get_ID, response, json)
+
+            return json["ID"]
+
+
 async def send_email(participant: str, code: str | int, keys: dict[str, ...] | None = None) -> None:
     """
     Отправляет письмо по эл. почте
