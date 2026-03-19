@@ -31,7 +31,7 @@ async def get_all() -> list[dict[str, ...]]:
         async with session.get(f"{host}:{port}/promo/all") as response:
             json = await response.json()
             if response.status >= 400:
-                raise IDNotFound(get_all, response, json)
+                raise IDNotFound(get_all, response.status, json)
 
             return json['all']
 
@@ -59,7 +59,7 @@ async def get(ID: str) -> dict[str, ...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise IDNotFound(get, response, json)
+                raise IDNotFound(get, response.status, json)
 
             return json
 
@@ -84,7 +84,7 @@ async def add(ID: str, value: int, author: str) -> None:
                 }
         ) as response:
             if response.status >= 400:
-                raise APIError(add, response, await response.json())
+                raise APIError(add, response.status, await response.json())
 
 
 async def edit(ID: str, value: int | None = None, author: str | None = None, active: bool | None = None) -> None:
@@ -115,4 +115,4 @@ async def edit(ID: str, value: int | None = None, author: str | None = None, act
                 params=payload
         ) as response:
             if response.status >= 400:
-                raise APIError(edit, response, await response.json())
+                raise APIError(edit, response.status, await response.json())

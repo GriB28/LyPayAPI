@@ -5,7 +5,7 @@ from psutil import cpu_percent as CPU, virtual_memory as RAM, process_iter
 from platform import system as get_platform_name
 
 from ..__config__ import CONFIGURATION
-from ..__exceptions__ import APIError, NoPythonProcessesFound
+from ..__exceptions__ import APIError
 
 host = CONFIGURATION.HOST
 port = CONFIGURATION.PORT
@@ -39,7 +39,7 @@ async def core_machine() -> dict[str, ...]:
         async with session.get(f"{host}:{port}/admin/machine") as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(core_machine, response, json)
+                raise APIError.get(core_machine, response.status, json)
 
             return json
 
@@ -59,7 +59,7 @@ def local_machine() -> dict[str, ...]:
         ) and len(running_process.cmdline()) > 0:  # and running_process.cmdline()[-1] == lls -- legacy part
             python_processes.append(running_process)
     if len(python_processes) == 0:
-        raise NoPythonProcessesFound
+        raise APIError.get(local_machine, 404, {"error": "NameError", "message": "no python processes found"})
 
     r = RAM()
     return {

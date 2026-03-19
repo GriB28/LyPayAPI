@@ -32,7 +32,7 @@ async def check_link(link: str) -> str:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(check_link, response, json)
+                raise APIError.get(check_link, response.status, json)
 
             return json["email"]
 
@@ -48,7 +48,7 @@ async def get_ID():
         async with session.get(f"{host}:{port}/reg/store_id") as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_ID, response, json)
+                raise APIError.get(get_ID, response.status, json)
 
             return json["ID"]
 
@@ -74,7 +74,7 @@ async def send_email(participant: str, keys: dict[str, ...] | None = None) -> No
                 params=payload
         ) as response:
             if response.status >= 400:
-                raise APIError.get(send_email, response, await response.json())
+                raise APIError.get(send_email, response.status, await response.json())
 
 
 async def new(*, storeID: int, name: str, hostID: int, email: str) -> None:
@@ -99,4 +99,4 @@ async def new(*, storeID: int, name: str, hostID: int, email: str) -> None:
                 }
         ) as response:
             if response.status >= 400:
-                raise APIError.get(new, response, await response.json())
+                raise APIError.get(new, response.status, await response.json())

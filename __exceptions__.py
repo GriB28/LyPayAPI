@@ -2,16 +2,16 @@ from aiohttp import ClientResponse
 
 
 class APIError(Exception):
-    def __init__(self, method, response: ClientResponse, json: dict | None = None):
+    def __init__(self, method, response: int, json: dict | None = None):
         """
         Класс ошибки API
 
         :param method: метод/функция библиотеки
-        :param response: ответ от API
+        :param response: HTTP-код ответа от API
         """
         self.method = method.__module__ + '.' + method.__name__
-        self.status_code = response.status
-        self.error_code = json["error"] if json is not None else None
+        self.status_code = response
+        self.error_code = json["error"] if json is not None else "unknown"
         self.message = json["message"] if json is not None else None
 
     def __str__(self):
@@ -27,12 +27,12 @@ class APIError(Exception):
 """
 
     @classmethod
-    def get(cls, method, response: ClientResponse, json: dict | None = None) -> APIError:
+    def get(cls, method, response: int, json: dict | None = None) -> APIError:
         """
         Автоматический определитель конкретной ошибки
 
         :param method: метод/функция библиотеки
-        :param response: ответ от API
+        :param response: HTTP-код ответа от API
         :param json: ответ от API в формате JSON
         :return: экземпляр APIError
         """
@@ -41,49 +41,49 @@ class APIError(Exception):
             pass
 
         elif json['message'] == 'bad parsing':
-            return BadRequest(method, response, json)
+            return BadRequest(method, response.status, json)
 
         elif json['message'] == 'invalid route':
-            return InvalidRoute(method, response, json)
+            return InvalidRoute(method, response.status, json)
 
         elif json['message'] == 'email not found':
-            return EmailNotFound(method, response, json)
+            return EmailNotFound(method, response.status, json)
 
         elif json['message'] == 'ID not found':
-            return IDNotFound(method, response, json)
+            return IDNotFound(method, response.status, json)
         elif json['message'] == 'ID already exists':
-            return IDAlreadyExists(method, response, json)
+            return IDAlreadyExists(method, response.status, json)
 
         elif json['message'] == 'not enough balance':
-            return NotEnoughBalance(method, response, json)
+            return NotEnoughBalance(method, response.status, json)
         elif json['message'] == 'subzero input':
-            return SubZeroInput(method, response, json)
+            return SubZeroInput(method, response.status, json)
 
         elif json['message'] == 'avatar not found':
-            return MediaNotFound(method, response, json)
+            return MediaNotFound(method, response.status, json)
 
         elif json['message'] == 'bad censor flag: user name':
-            return InvalidUserName(method, response, json)
+            return InvalidUserName(method, response.status, json)
         elif json['message'] == 'bad censor flag: login':
-            return InvalidUserLogin(method, response, json)
+            return InvalidUserLogin(method, response.status, json)
 
         elif json['message'] == 'bad censor flag: store name':
-            return InvalidStoreName(method, response, json)
+            return InvalidStoreName(method, response.status, json)
         elif json['message'] == 'bad censor flag: desc':
-            return InvalidStoreDescription(method, response, json)
+            return InvalidStoreDescription(method, response.status, json)
 
         elif json['message'] == 'bad censor flag: store item name':
-            return InvalidStoreItemName(method, response, json)
+            return InvalidStoreItemName(method, response.status, json)
         elif json['message'] == 'bad censor flag: store item price':
-            return InvalidStoreItemPrice(method, response, json)
+            return InvalidStoreItemPrice(method, response.status, json)
 
         elif json['message'] == 'link not found':
-            return StoreFormLinkNotFound(method, response, json)
+            return StoreFormLinkNotFound(method, response.status, json)
 
         elif json['message'] == 'no python processes found':
-            return NoPythonProcessesFound(method, response, json)
+            return NoPythonProcessesFound(method, response.status, json)
 
-        return cls(method, response, json)
+        return cls(method, response.status, json)
 
 
 class IDNotFound(APIError):

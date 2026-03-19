@@ -39,7 +39,7 @@ async def get(chequeID: str) -> dict[str, ...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get, response, json)
+                raise APIError.get(get, response.status, json)
 
             json["items"] = j2.from_('{' + json["items"] + '}')
             return json
@@ -61,7 +61,7 @@ async def get_all(storeID: str, active_filter: bool = True) -> list[dict[str, ..
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_all, response, json)
+                raise APIError.get(get_all, response.status, json)
 
             return json["result"]
 
@@ -88,7 +88,7 @@ async def create(storeID: str, customer: int, items: dict[str, int]) -> str:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_all, response, json)
+                raise APIError.get(get_all, response.status, json)
 
             return json["generated"]
 
@@ -107,4 +107,4 @@ async def cancel(chequeID: str) -> None:
                 params={"chequeID": chequeID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(cancel, response, await response.json())
+                raise APIError.get(cancel, response.status, await response.json())
