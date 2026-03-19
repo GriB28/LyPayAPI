@@ -80,6 +80,9 @@ class APIError(Exception):
         elif json['message'] == 'link not found':
             return StoreFormLinkNotFound(method, response, json)
 
+        elif json['message'] == 'no python processes found':
+            return NoPythonProcessesFound(method, response, json)
+
         return cls(method, response, json)
 
 
@@ -156,3 +159,8 @@ class InvalidStoreItemPrice(APIError):
 class StoreFormLinkNotFound(APIError):
     def __str__(self):
         return super().form_str_message("код доступа не найден в базе данных")
+
+
+class NoPythonProcessesFound(APIError):
+    def __str__(self):
+        return super().form_str_message("ядро не смогло найти процесс(ы) Python")
