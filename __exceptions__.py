@@ -80,6 +80,9 @@ class APIError(Exception):
         elif json['message'] == 'no python processes found':
             return NoPythonProcessesFound(method, response, json)
 
+        elif json['message'] == 'db returned nothing':
+            return DBReturnedAVoid(method, response, json)
+
         return cls(method, response, json)
 
 
@@ -161,3 +164,8 @@ class StoreFormLinkNotFound(APIError):
 class NoPythonProcessesFound(APIError):
     def __str__(self):
         return super().form_str_message("ядро не смогло найти процесс(ы) Python")
+
+
+class DBReturnedAVoid(APIError):
+    def __str__(self):
+        return super().form_str_message("ответа на запрос к базе данных не последовало")
