@@ -71,3 +71,24 @@ def local_machine() -> dict[str, ...]:
         "ram_build_v": sum(list(map(lambda p: p.memory_info().rss, python_processes))) / 1073741824 / len(python_processes),
         "cpu_cores": CPU(percpu=True)
     }
+
+
+async def db_query(db_type: str, query: str) -> list[...]:
+    """
+    Функция для исполнения любого запроса к любой базе данных ядра (см. ``db_type``)
+
+    :param db_type: 'main' (главная база данных) или 'fw' (файерволл)
+    :param query: запрос
+    :return: словарь с данными о машине ядра
+    """
+
+    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+        async with session.get(
+                f"{host}:{port}/admin/db",
+                params={"db_type": db_type, "query": query}
+        ) as response:
+            json = await response.json()
+            if response.status >= 400:
+                raise APIError.get(db_query, response.status, json)
+
+            return json["result"]
