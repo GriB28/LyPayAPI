@@ -1,6 +1,3 @@
-from aiohttp import ClientResponse
-
-
 class APIError(Exception):
     def __init__(self, method, response: int, json: dict | None = None):
         """
@@ -41,49 +38,49 @@ class APIError(Exception):
             pass
 
         elif json['message'] == 'bad parsing':
-            return BadRequest(method, response.status, json)
+            return BadRequest(method, response, json)
 
         elif json['message'] == 'invalid route':
-            return InvalidRoute(method, response.status, json)
+            return InvalidRoute(method, response, json)
 
         elif json['message'] == 'email not found':
-            return EmailNotFound(method, response.status, json)
+            return EmailNotFound(method, response, json)
 
         elif json['message'] == 'ID not found':
-            return IDNotFound(method, response.status, json)
+            return IDNotFound(method, response, json)
         elif json['message'] == 'ID already exists':
-            return IDAlreadyExists(method, response.status, json)
+            return IDAlreadyExists(method, response, json)
 
         elif json['message'] == 'not enough balance':
-            return NotEnoughBalance(method, response.status, json)
+            return NotEnoughBalance(method, response, json)
         elif json['message'] == 'subzero input':
-            return SubZeroInput(method, response.status, json)
+            return SubZeroInput(method, response, json)
 
         elif json['message'] == 'avatar not found':
-            return MediaNotFound(method, response.status, json)
+            return MediaNotFound(method, response, json)
 
         elif json['message'] == 'bad censor flag: user name':
-            return InvalidUserName(method, response.status, json)
+            return InvalidUserName(method, response, json)
         elif json['message'] == 'bad censor flag: login':
-            return InvalidUserLogin(method, response.status, json)
+            return InvalidUserLogin(method, response, json)
 
         elif json['message'] == 'bad censor flag: store name':
-            return InvalidStoreName(method, response.status, json)
+            return InvalidStoreName(method, response, json)
         elif json['message'] == 'bad censor flag: desc':
-            return InvalidStoreDescription(method, response.status, json)
+            return InvalidStoreDescription(method, response, json)
 
         elif json['message'] == 'bad censor flag: store item name':
-            return InvalidStoreItemName(method, response.status, json)
+            return InvalidStoreItemName(method, response, json)
         elif json['message'] == 'bad censor flag: store item price':
-            return InvalidStoreItemPrice(method, response.status, json)
+            return InvalidStoreItemPrice(method, response, json)
 
         elif json['message'] == 'link not found':
-            return StoreFormLinkNotFound(method, response.status, json)
+            return StoreFormLinkNotFound(method, response, json)
 
         elif json['message'] == 'no python processes found':
-            return NoPythonProcessesFound(method, response.status, json)
+            return NoPythonProcessesFound(method, response, json)
 
-        return cls(method, response.status, json)
+        return cls(method, response, json)
 
 
 class IDNotFound(APIError):
