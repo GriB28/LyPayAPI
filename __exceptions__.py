@@ -83,6 +83,9 @@ class APIError(Exception):
         elif json['message'] == 'db returned nothing':
             return DBReturnedAVoid(method, response, json)
 
+        elif json['message'] == 'bad fw check':
+            return BadFireWallCheck(method, response, json)
+
         return cls(method, response, json)
 
 
