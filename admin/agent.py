@@ -18,6 +18,26 @@ ssl_context.verify_mode = CERT_NONE
 platform_name = get_platform_name()
 
 
+async def is_agent(userID: int) -> bool:
+    """
+    Проверяет, является ли пользователь агентом
+
+    :param userID: ID пользователя
+    :return: True, если является; False, если нет
+    """
+
+    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+        async with session.get(
+                f"{host}:{port}/admin/agent/check",
+                params={"userID": userID}
+        ) as response:
+            json = await response.json()
+            if response.status >= 400:
+                raise APIError.get(is_agent, response.status, json)
+
+            return json["result"]
+
+
 async def deposit(userID: int, amount: int, agentID: int) -> None:
     """
     Функция агентского пополнения баланса пользователя
