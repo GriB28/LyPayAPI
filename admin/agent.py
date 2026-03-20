@@ -30,7 +30,7 @@ async def deposit(userID: int, amount: int, agentID: int) -> None:
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(
-                f"{host}:{port}/info/deposit",
+                f"{host}:{port}/admin/agent/deposit",
                 params={"userID": userID, "amount": amount, "agentID": agentID}
         ) as response:
             if response.status >= 400:
