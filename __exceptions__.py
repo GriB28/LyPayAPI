@@ -169,3 +169,8 @@ class NoPythonProcessesFound(APIError):
 class DBReturnedAVoid(APIError):
     def __str__(self):
         return super().form_str_message("ответа на запрос к базе данных не последовало")
+
+
+class BadFireWallCheck(APIError):
+    def __str__(self):
+        return super().form_str_message("запрос не прошёл проверку файерволла")
