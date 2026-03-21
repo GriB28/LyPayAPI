@@ -17,7 +17,7 @@ async def check(ID: int, route: str) -> bool:
     Быстрая проверка доступа
 
     :param ID: ID пользователя
-    :param route: 'main', 'stores' или 'admins'
+    :param route: 'main', 'stores', 'admins' или 'high'
     :return: True, если доступ разрешён, False -- в противном случае
     """
 
@@ -43,7 +43,7 @@ async def entry(ID: int, route: str) -> dict[str, ...]:
     | }
 
     :param ID: ID пользователя
-    :param route: 'main', 'stores' или 'admins'
+    :param route: 'main', 'stores', 'admins' или 'high'
     :return: словарь с данными пользователя из таблицы ``firewall.STORES``
     """
 
@@ -54,8 +54,7 @@ async def entry(ID: int, route: str) -> dict[str, ...]:
                 params={"ID": ID}
         ) as response:
             json = await response.json()
-            if response.status // 100 == 2:
-                if json['found']:
-                    return json['entry']
-                raise IDNotFound(entry, response, json)
-            raise APIError.get(entry, response, json)
+            if response.status >= 400:
+                raise APIError.get(entry, response.status, json)
+
+            return json['result']

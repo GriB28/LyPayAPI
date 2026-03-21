@@ -40,7 +40,7 @@ async def get(ID: str) -> dict[str, ...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get, response, json)
+                raise APIError.get(get, response.status, json)
 
             return json
 
@@ -56,6 +56,6 @@ async def get_all() -> list[str]:
         async with session.get(f"{host}:{port}/store/info/all") as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_all, response, json)
+                raise APIError.get(get_all, response.status, json)
 
             return json['ids']

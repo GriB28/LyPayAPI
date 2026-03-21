@@ -1,17 +1,14 @@
-from aiohttp import ClientResponse
-
-
 class APIError(Exception):
-    def __init__(self, method, response: ClientResponse, json: dict | None = None):
+    def __init__(self, method, response: int, json: dict | None = None):
         """
         Класс ошибки API
 
         :param method: метод/функция библиотеки
-        :param response: ответ от API
+        :param response: HTTP-код ответа от API
         """
         self.method = method.__module__ + '.' + method.__name__
-        self.status_code = response.status
-        self.error_code = json["error"] if json is not None else None
+        self.status_code = response
+        self.error_code = json["error"] if json is not None else "unknown"
         self.message = json["message"] if json is not None else None
 
     def __str__(self):
@@ -27,12 +24,12 @@ class APIError(Exception):
 """
 
     @classmethod
-    def get(cls, method, response: ClientResponse, json: dict | None = None) -> APIError:
+    def get(cls, method, response: int, json: dict | None = None) -> APIError:
         """
         Автоматический определитель конкретной ошибки
 
         :param method: метод/функция библиотеки
-        :param response: ответ от API
+        :param response: HTTP-код ответа от API
         :param json: ответ от API в формате JSON
         :return: экземпляр APIError
         """
@@ -79,6 +76,15 @@ class APIError(Exception):
 
         elif json['message'] == 'link not found':
             return StoreFormLinkNotFound(method, response, json)
+
+        elif json['message'] == 'no python processes found':
+            return NoPythonProcessesFound(method, response, json)
+
+        elif json['message'] == 'db returned nothing':
+            return DBReturnedAVoid(method, response, json)
+
+        elif json['message'] == 'bad fw check':
+            return BadFireWallCheck(method, response, json)
 
         return cls(method, response, json)
 
@@ -156,3 +162,18 @@ class InvalidStoreItemPrice(APIError):
 class StoreFormLinkNotFound(APIError):
     def __str__(self):
         return super().form_str_message("код доступа не найден в базе данных")
+
+
+class NoPythonProcessesFound(APIError):
+    def __str__(self):
+        return super().form_str_message("ядро не смогло найти процесс(ы) Python")
+
+
+class DBReturnedAVoid(APIError):
+    def __str__(self):
+        return super().form_str_message("ответа на запрос к базе данных не последовало")
+
+
+class BadFireWallCheck(APIError):
+    def __str__(self):
+        return super().form_str_message("запрос не прошёл проверку файерволла")

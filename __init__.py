@@ -5,6 +5,7 @@ from .__config__ import CONFIGURATION, VERSION, NAME, BUILD
 
 from . import user
 from . import store
+from . import admin
 from . import utils
 
 

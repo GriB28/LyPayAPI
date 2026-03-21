@@ -43,7 +43,7 @@ async def get(ID: str) -> str | None:
                 json = {"message": "unknown", "error": "unknown", "result": "got image content"}
 
             if response.status >= 400:
-                raise APIError.get(get, response, json)
+                raise APIError.get(get, response.status, json)
 
             if json['result'] == "no icon":
                 if exists(path):
@@ -80,7 +80,7 @@ async def update(ID: str, media_path: str):
                 data=form
         ) as response:
             if response.status >= 400:
-                raise APIError.get(update, response, await response.json())
+                raise APIError.get(update, response.status, await response.json())
 
 
 async def delete(ID: str):
@@ -97,4 +97,4 @@ async def delete(ID: str):
                 params={"ID": ID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(delete, response, await response.json())
+                raise APIError.get(delete, response.status, await response.json())

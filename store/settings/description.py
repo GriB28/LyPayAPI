@@ -28,7 +28,7 @@ async def get(ID: str) -> str:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get, response, json)
+                raise APIError.get(get, response.status, json)
 
             return json['result']
 
@@ -51,4 +51,4 @@ async def update(ID: str, new: str):
                 }
         ) as response:
             if response.status >= 400:
-                raise APIError.get(update, response, await response.json())
+                raise APIError.get(update, response.status, await response.json())

@@ -28,7 +28,7 @@ async def view(ID: int) -> int:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(view, response, json)
+                raise APIError.get(view, response.status, json)
 
             return json["balance"]
 
@@ -58,7 +58,7 @@ async def deposit(ID: int, value: int, agent_id: int | None = None) -> None:
                 params=payload
         ) as response:
             if response.status >= 400:
-                raise APIError.get(deposit, response, await response.json())
+                raise APIError.get(deposit, response.status, await response.json())
 
 
 async def transfer(ID_out: int, ID_in: int | str, amount: int) -> None:
@@ -93,4 +93,4 @@ async def transfer(ID_out: int, ID_in: int | str, amount: int) -> None:
                 params=payload
         ) as response:
             if response.status >= 400:
-                raise APIError.get(transfer, response, await response.json())
+                raise APIError.get(transfer, response.status, await response.json())
