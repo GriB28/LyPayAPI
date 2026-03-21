@@ -45,17 +45,33 @@ async def get(ID: str) -> dict[str, ...]:
             return json
 
 
-async def get_all() -> list[str]:
+async def get_all_ids() -> list[str]:
     """
     Запрос всех существующих ID магазинов
 
-    :return: список с ID из таблицы ``database.USERS``
+    :return: список с ID из таблицы ``database.STORES``
     """
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
-        async with session.get(f"{host}:{port}/store/info/all") as response:
+        async with session.get(f"{host}:{port}/store/info/all/stores") as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_all, response.status, json)
+                raise APIError.get(get_all_ids, response.status, json)
+
+            return json['ids']
+
+
+async def get_all_shopkeepers() -> list[str]:
+    """
+    Запрос всех userID пользователей, имеющих доступ к любому магазину
+
+    :return: список с userID из таблицы ``database.SHOPKEEPERS``
+    """
+
+    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+        async with session.get(f"{host}:{port}/store/info/all/shopkeepers") as response:
+            json = await response.json()
+            if response.status >= 400:
+                raise APIError.get(get_all_shopkeepers, response.status, json)
 
             return json['ids']
