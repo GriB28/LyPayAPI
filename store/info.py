@@ -61,7 +61,7 @@ async def get_all_ids() -> list[str]:
             return json['ids']
 
 
-async def get_all_shopkeepers() -> list[str]:
+async def get_all_shopkeepers() -> list[int]:
     """
     Запрос всех userID пользователей, имеющих доступ к любому магазину
 
