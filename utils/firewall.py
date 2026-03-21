@@ -54,8 +54,7 @@ async def entry(ID: int, route: str) -> dict[str, ...]:
                 params={"ID": ID}
         ) as response:
             json = await response.json()
-            if response.status // 100 == 2:
-                if json['found']:
-                    return json['entry']
-                raise IDNotFound(entry, response.status, json)
-            raise APIError.get(entry, response.status, json)
+            if response.status >= 400:
+                raise APIError.get(entry, response.status, json)
+
+            return json['result']
