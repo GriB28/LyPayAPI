@@ -57,7 +57,7 @@ async def get_all(storeID: str, active_filter: bool = True) -> list[dict[str, ..
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(
                 f"{host}:{port}/store/cheques/all",
-                params={"storeID": storeID, "active_filter": active_filter}
+                params={"storeID": storeID, "active_filter": int(active_filter)}
         ) as response:
             json = await response.json()
             if response.status >= 400:
