@@ -41,13 +41,13 @@ async def get(ID: str) -> dict[str, ...]:
             return json
 
 
-async def get_all(storeID: str, active_filter: bool = True) -> list[dict[str, ...]]:
+async def get_all(storeID: str, active_filter: bool = True) -> list[str]:
     """
-    Запрос данных обо всех айтемах конкретного магазина. Формат такой же как при вызове ``items.get``
+    Запрос данных обо всех айтемах конкретного магазина
 
     :param storeID: ID магазина
     :param active_filter: фильтр, показывающий только активные айтемы (по умолчанию включён)
-    :return: список словарей с данными об айтемах из таблицы ``database.ITEMS``
+    :return: список ID айтемов из таблицы ``database.ITEMS``
     """
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
