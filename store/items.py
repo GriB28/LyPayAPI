@@ -41,19 +41,19 @@ async def get(ID: str) -> dict[str, ...]:
             return json
 
 
-async def get_all(storeID: str, active_filter: bool = True) -> list[dict[str, ...]]:
+async def get_all(storeID: str, active_filter: bool = True) -> list[str]:
     """
-    Запрос данных обо всех айтемах конкретного магазина. Формат такой же как при вызове ``items.get``
+    Запрос данных обо всех айтемах конкретного магазина
 
     :param storeID: ID магазина
     :param active_filter: фильтр, показывающий только активные айтемы (по умолчанию включён)
-    :return: список словарей с данными об айтемах из таблицы ``database.ITEMS``
+    :return: список ID айтемов из таблицы ``database.ITEMS``
     """
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(
                 f"{host}:{port}/store/items/all",
-                params={"storeID": storeID, "active_filter": active_filter}
+                params={"storeID": storeID, "active_filter": int(active_filter)}
         ) as response:
             json = await response.json()
             if response.status >= 400:

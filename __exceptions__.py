@@ -8,8 +8,8 @@ class APIError(Exception):
         """
         self.method = method.__module__ + '.' + method.__name__
         self.status_code = response
-        self.error_code = json["error"] if json is not None else "unknown"
-        self.message = json["message"] if json is not None else None
+        self.error_code = json["error"] if json is not None and "error" in json.keys() else "unknown"
+        self.message = json["message"] if json is not None and "message" in json.keys() else None
 
     def __str__(self):
         return self.form_str_message()
@@ -18,8 +18,8 @@ class APIError(Exception):
         return f"""\
 Получен код HTTP{self.status_code} при вызове {self.method}. \
 Сообщение ядра: {self.error_code} {
-        f"({custom_message})" if custom_message is not None else
-        (f"({self.message})" if self.message is not None else "")
+        f"({custom_message})" if custom_message is not None and len(custom_message) > 0 else
+        (f"({self.message})" if self.message is not None and len(self.message) > 0 else "")
 }
 """
 
@@ -80,11 +80,14 @@ class APIError(Exception):
         elif json['message'] == 'no python processes found':
             return NoPythonProcessesFound(method, response, json)
 
-        elif json['message'] == 'db returned nothing':
+        elif json['message'] == 'db returned a void':
             return DBReturnedAVoid(method, response, json)
 
         elif json['message'] == 'bad fw check':
             return BadFireWallCheck(method, response, json)
+
+        elif json['message'] == 'user is already a shopkeeper':
+            return UserIsAlreadyShopkeeper(method, response, json)
 
         return cls(method, response, json)
 
@@ -177,3 +180,8 @@ class DBReturnedAVoid(APIError):
 class BadFireWallCheck(APIError):
     def __str__(self):
         return super().form_str_message("запрос не прошёл проверку файерволла")
+
+
+class UserIsAlreadyShopkeeper(APIError):
+    def __str__(self):
+        return super().form_str_message("пользователь уже имеет доступ к какому-то магазину")

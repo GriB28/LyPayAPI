@@ -45,19 +45,19 @@ async def get(chequeID: str) -> dict[str, ...]:
             return json
 
 
-async def get_all(storeID: str, active_filter: bool = True) -> list[dict[str, ...]]:
+async def get_all(storeID: str, active_filter: bool = True) -> list[str]:
     """
-    Запрос данных обо всех чеках конкретного магазина. Формат такой же как при вызове ``cheques.get``
+    Запрос данных обо всех чеках конкретного магазина.
 
     :param storeID: ID магазина
     :param active_filter: фильтр, показывающий только активные чеки (по умолчанию включён)
-    :return: список словарей с данными об айтемах из таблицы ``database.CHEQUES``
+    :return: список ID чеков из таблицы ``database.CHEQUES``
     """
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(
                 f"{host}:{port}/store/cheques/all",
-                params={"storeID": storeID, "active_filter": active_filter}
+                params={"storeID": storeID, "active_filter": int(active_filter)}
         ) as response:
             json = await response.json()
             if response.status >= 400:
