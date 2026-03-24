@@ -90,16 +90,11 @@ async def qr(ID: int) -> str:
     """
 
     path = cache_path + f"{ID}.png"
-    payload = {
-        "ID": ID,
-        "unix": getmtime(path)
-    }
-
     if exists(path):
         async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
             async with session.get(
                     f"{host}:{port}/user/qr/check",
-                    params=payload
+                    params={"ID": ID, "unix": getmtime(path)}
             ) as response:
                 json = await response.json()
                 if response.status >= 400:
