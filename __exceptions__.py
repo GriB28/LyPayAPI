@@ -8,8 +8,8 @@ class APIError(Exception):
         """
         self.method = method.__module__ + '.' + method.__name__
         self.status_code = response
-        self.error_code = json["error"] if json is not None else "unknown"
-        self.message = json["message"] if json is not None else None
+        self.error_code = json["error"] if json is not None and "error" in json.keys() else "unknown"
+        self.message = json["message"] if json is not None and "message" in json.keys() else None
 
     def __str__(self):
         return self.form_str_message()
