@@ -80,7 +80,7 @@ class APIError(Exception):
         elif json['message'] == 'no python processes found':
             return NoPythonProcessesFound(method, response, json)
 
-        elif json['message'] == 'db returned nothing':
+        elif json['message'] == 'db returned a void':
             return DBReturnedAVoid(method, response, json)
 
         elif json['message'] == 'bad fw check':
