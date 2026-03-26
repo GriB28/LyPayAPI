@@ -1,7 +1,7 @@
 <div align="center" style="text-align: center;">
 
 # [LyPayAPI](https://github.com/LyPay-Electronics-Group/LyPayAPI)
-## API платформы онлайн банкинга [LyPay](https://github.com/LyPay-Electronics-Group) [`Благотворительной Ярмарки Лицея "Вторая школа"`](https://t.me/fairL2SH)
+## API платформы онлайн банкинга [LyPay](https://github.com/LyPay-Electronics-Group)<br>[`Благотворительной Ярмарки Лицея "Вторая школа"`](https://t.me/fairL2SH)
 
 <img src="https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue" alt="Python3">
 <img src="https://img.shields.io/badge/fastapi-109989?style=for-the-badge&logo=FASTAPI&logoColor=white" alt="FastAPI">
