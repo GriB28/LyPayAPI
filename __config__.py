@@ -11,6 +11,7 @@ class CONFIGURATION:
     HOST = "http://localhost"
     PORT = 8128
 
+
 VERSION = "v2.4.1a"
 NAME = "API Release"
 BUILD = 12
