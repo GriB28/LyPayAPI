@@ -44,7 +44,7 @@ async def update(ID: str, new: str):
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(
-                f"{host}:{port}/store/settings/desc/set",
+                f"{host}:{port}/store/settings/desc/upd",
                 params={
                     "ID": ID,
                     "new": new
