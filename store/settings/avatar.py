@@ -75,7 +75,7 @@ async def update(ID: str, media_path: str):
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.post(
-                f"{host}:{port}/store/settings/avatar/set",
+                f"{host}:{port}/store/settings/avatar/upd",
                 params={"ID": ID},
                 data=form
         ) as response:
