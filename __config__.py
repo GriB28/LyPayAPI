@@ -12,6 +12,6 @@ class CONFIGURATION:
     PORT = 8128
 
 
-VERSION = "v2.4.1a"
+VERSION = "v2.4.2a"
 NAME = "API Release"
-BUILD = 12
+BUILD = 13
