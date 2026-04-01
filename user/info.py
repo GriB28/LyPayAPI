@@ -1,5 +1,4 @@
 from aiohttp import ClientSession, TCPConnector
-from ssl import create_default_context as ssl_create_default_context, CERT_NONE
 
 from os.path import getmtime, exists
 from os import remove
@@ -7,14 +6,6 @@ from os import remove
 from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
 from ..scripts.mem import save_iterative
-
-host = CONFIGURATION.HOST
-port = CONFIGURATION.PORT
-cache_path = CONFIGURATION.CACHEPATH
-
-ssl_context = ssl_create_default_context()
-ssl_context.check_hostname = False
-ssl_context.verify_mode = CERT_NONE
 
 
 async def get(ID: int) -> dict[str, ...]:
@@ -37,9 +28,9 @@ async def get(ID: int) -> dict[str, ...]:
     :return: словарь с данными пользователя из таблицы ``database.USERS``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/user/get",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/get",
                 params={"ID": ID}
         ) as response:
             json = await response.json()
@@ -56,8 +47,8 @@ async def get_all() -> list[int]:
     :return: список с ID из таблицы ``database.USERS``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
-        async with session.get(f"{host}:{port}/user/all") as response:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+        async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/all") as response:
             json = await response.json()
             if response.status >= 400:
                 raise APIError.get(get_all, response.status, json)
@@ -70,9 +61,9 @@ async def _request_qr(ID: int, path: str) -> None:
     Внутренняя функция, не рекомендуется использовать без обёртки `qr()`
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/user/qr/get",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/qr/get",
                 params={"ID": ID}
         ) as response:
             if response.status >= 400:
@@ -89,11 +80,11 @@ async def qr(ID: int) -> str:
     :return: абсолютный путь до файла (независимо от того, было обновление или нет)
     """
 
-    path = cache_path + f"{ID}.png"
+    path = CONFIGURATION.CACHEPATH + f"{ID}.png"
     if exists(path):
-        async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+        async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
             async with session.get(
-                    f"{host}:{port}/user/qr/check",
+                    f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/qr/check",
                     params={"ID": ID, "unix": getmtime(path)}
             ) as response:
                 json = await response.json()

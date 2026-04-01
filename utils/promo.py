@@ -1,15 +1,7 @@
 from aiohttp import ClientSession, TCPConnector
-from ssl import create_default_context as ssl_create_default_context, CERT_NONE
 
 from ..__config__ import CONFIGURATION
-from ..__exceptions__ import APIError, IDNotFound, IDAlreadyExists
-
-host = CONFIGURATION.HOST
-port = CONFIGURATION.PORT
-
-ssl_context = ssl_create_default_context()
-ssl_context.check_hostname = False
-ssl_context.verify_mode = CERT_NONE
+from ..__exceptions__ import APIError, IDNotFound
 
 
 async def get_all() -> list[dict[str, ...]]:
@@ -27,8 +19,8 @@ async def get_all() -> list[dict[str, ...]]:
     :return: список словарей с данными таблицы ``database.PROMO``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
-        async with session.get(f"{host}:{port}/promo/all") as response:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+        async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/promo/all") as response:
             json = await response.json()
             if response.status >= 400:
                 raise IDNotFound(get_all, response.status, json)
@@ -52,9 +44,9 @@ async def get(ID: str) -> dict[str, ...]:
     :return: словарь с данными из таблицы ``database.PROMO``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/promo/get",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/promo/get",
                 params={"ID": ID}
         ) as response:
             json = await response.json()
@@ -74,9 +66,9 @@ async def add(ID: str, value: int, author: str) -> None:
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/promo/add",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/promo/add",
                 params={
                     "ID": ID,
                     "value": value,
@@ -109,9 +101,9 @@ async def edit(ID: str, value: int | None = None, author: str | None = None, act
         raise ValueError("В вызове функции promo.edit должен присутствовать хотя бы один аргумент кроме ID.")
     payload["ID"] = ID
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/promo/edit",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/promo/edit",
                 params=payload
         ) as response:
             if response.status >= 400:

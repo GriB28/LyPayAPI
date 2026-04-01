@@ -1,3 +1,4 @@
+from ssl import create_default_context as ssl_create_default_context, CERT_NONE
 from os import getcwd
 
 
@@ -10,6 +11,10 @@ class CONFIGURATION:
 
     HOST = "http://localhost"
     PORT = 8128
+
+    SSL = ssl_create_default_context()
+    SSL.check_hostname = False
+    SSL.verify_mode = CERT_NONE
 
 
 VERSION = "v2.4.2a"

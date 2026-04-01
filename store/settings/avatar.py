@@ -1,5 +1,4 @@
 from aiohttp import ClientSession, TCPConnector, FormData
-from ssl import create_default_context as ssl_create_default_context, CERT_NONE
 
 from os.path import getmtime, exists
 from os import remove
@@ -8,14 +7,6 @@ from aiofiles import open as a_open
 from ...__config__ import CONFIGURATION
 from ...__exceptions__ import APIError
 from ...scripts.mem import save_iterative
-
-host = CONFIGURATION.HOST
-port = CONFIGURATION.PORT
-cache_path = CONFIGURATION.CACHEPATH
-
-ssl_context = ssl_create_default_context()
-ssl_context.check_hostname = False
-ssl_context.verify_mode = CERT_NONE
 
 
 async def get(ID: str) -> str | None:
@@ -32,9 +23,9 @@ async def get(ID: str) -> str | None:
     if exists(path):
         payload["unix"] = getmtime(path)
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/store/settings/avatar/get",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/avatar/get",
                 params=payload
         ) as response:
             if "json" in response.content_type:
@@ -73,9 +64,9 @@ async def update(ID: str, media_path: str):
             content_type=f"image/{media_type}"
         )
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.post(
-                f"{host}:{port}/store/settings/avatar/upd",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/avatar/upd",
                 params={"ID": ID},
                 data=form
         ) as response:
@@ -91,9 +82,9 @@ async def delete(ID: str):
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/store/settings/avatar/remove",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/avatar/remove",
                 params={"ID": ID}
         ) as response:
             if response.status >= 400:
