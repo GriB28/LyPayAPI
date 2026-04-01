@@ -1,5 +1,4 @@
 from aiohttp import ClientSession, TCPConnector
-from ssl import create_default_context as ssl_create_default_context, CERT_NONE
 
 from jwt import encode as jwt_encode
 
@@ -7,13 +6,6 @@ from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
 from ..scripts import j2
 
-host = CONFIGURATION.HOST
-port = CONFIGURATION.PORT
-cache_path = CONFIGURATION.CACHEPATH
-
-ssl_context = ssl_create_default_context()
-ssl_context.check_hostname = False
-ssl_context.verify_mode = CERT_NONE
 
 
 async def get(chequeID: str) -> dict[str, ...]:
@@ -32,9 +24,9 @@ async def get(chequeID: str) -> dict[str, ...]:
     :return: словарь с данными чека из таблицы ``database.CHEQUES``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/store/cheques/get",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/cheques/get",
                 params={"chequeID": chequeID}
         ) as response:
             json = await response.json()
@@ -54,9 +46,9 @@ async def get_all(storeID: str, active_filter: bool = True) -> list[str]:
     :return: список ID чеков из таблицы ``database.CHEQUES``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/store/cheques/all",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/cheques/all",
                 params={"storeID": storeID, "active_filter": int(active_filter)}
         ) as response:
             json = await response.json()
@@ -81,9 +73,9 @@ async def create(storeID: str, customer: int, items: dict[str, int]) -> str:
     payload["customer"] = customer
     payload["items"] = jwt_encode(items, CONFIGURATION.JWT_KEY, algorithm="HS256")
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/store/cheques/add",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/cheques/add",
                 params=payload
         ) as response:
             json = await response.json()
@@ -101,9 +93,9 @@ async def cancel(chequeID: str) -> None:
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/store/cheques/de",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/cheques/de",
                 params={"chequeID": chequeID}
         ) as response:
             if response.status >= 400:

@@ -1,19 +1,9 @@
 from aiohttp import ClientSession, TCPConnector
-from ssl import create_default_context as ssl_create_default_context, CERT_NONE
 
 from jwt import encode as jwt_encode
 
 from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
-
-host = CONFIGURATION.HOST
-port = CONFIGURATION.PORT
-cache_path = CONFIGURATION.CACHEPATH
-
-ssl_context = ssl_create_default_context()
-ssl_context.check_hostname = False
-ssl_context.verify_mode = CERT_NONE
-
 
 
 async def check_link(link: str) -> str:
@@ -25,9 +15,9 @@ async def check_link(link: str) -> str:
     происходит только проверка
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/store/info/link",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/info/link",
                 params={"link": link}
         ) as response:
             json = await response.json()
@@ -44,8 +34,8 @@ async def get_ID() -> str:
     :return: незанятый ID магазина
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
-        async with session.get(f"{host}:{port}/reg/store_id") as response:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+        async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/store_id") as response:
             json = await response.json()
             if response.status >= 400:
                 raise APIError.get(get_ID, response.status, json)
@@ -53,11 +43,12 @@ async def get_ID() -> str:
             return json["ID"]
 
 
-async def send_email(participant: str, keys: dict[str, ...] | None = None) -> None:
+async def send_email(participant: str, code: str | None = None, keys: dict[str, ...] | None = None) -> None:
     """
     Отправляет письмо по эл. почте
 
     :param participant: почта получателя
+    :param code: код доступа (по умолчанию генерируется рандомный)
     :param keys: словарь ключей для замены в итоговом письме (выставляется по умолчанию)
     :return: ничего (может вызвать ошибку выполнения)
     """
@@ -65,12 +56,14 @@ async def send_email(participant: str, keys: dict[str, ...] | None = None) -> No
     payload = dict()
     if keys is not None:
         payload["keys"] = jwt_encode(keys, CONFIGURATION.JWT_KEY, algorithm="HS256")
+    if code is not None:
+        payload["code"] = code
     payload["route"] = "shopkeeper"
     payload["email"] = participant
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/reg/email/send",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/email/send",
                 params=payload
         ) as response:
             if response.status >= 400:
@@ -89,9 +82,9 @@ async def new(*, storeID: str, name: str, hostID: int, email: str, link: str) ->
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/reg/store",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/store",
                 params={
                     "storeID": storeID,
                     "name": name,

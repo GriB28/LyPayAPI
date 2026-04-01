@@ -1,15 +1,7 @@
 from aiohttp import ClientSession, TCPConnector
-from ssl import create_default_context as ssl_create_default_context, CERT_NONE
 
 from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError, IDNotFound
-
-host = CONFIGURATION.HOST
-port = CONFIGURATION.PORT
-
-ssl_context = ssl_create_default_context()
-ssl_context.check_hostname = False
-ssl_context.verify_mode = CERT_NONE
 
 
 async def check(ID: int, route: str) -> bool:
@@ -48,9 +40,9 @@ async def entry(ID: int, route: str) -> dict[str, ...]:
     """
 
     route = route.strip().lower()
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/fw/{route}",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/fw/{route}",
                 params={"ID": ID}
         ) as response:
             json = await response.json()

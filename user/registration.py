@@ -1,18 +1,9 @@
 from aiohttp import ClientSession, TCPConnector
-from ssl import create_default_context as ssl_create_default_context, CERT_NONE
 
 from jwt import encode as jwt_encode
 
 from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
-
-host = CONFIGURATION.HOST
-port = CONFIGURATION.PORT
-cache_path = CONFIGURATION.CACHEPATH
-
-ssl_context = ssl_create_default_context()
-ssl_context.check_hostname = False
-ssl_context.verify_mode = CERT_NONE
 
 
 async def check_email_record(email: str) -> dict[str, ...]:
@@ -29,9 +20,9 @@ async def check_email_record(email: str) -> dict[str, ...]:
     :return: словарь с данными пользователя из таблицы ``database.CORPORATION``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/reg/email/corp_record",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/email/corp_record",
                 params={"email": email}
         ) as response:
             json = await response.json()
@@ -41,13 +32,13 @@ async def check_email_record(email: str) -> dict[str, ...]:
             return json
 
 
-async def send_email(route: str, participant: str, code: str | int, keys: dict[str, ...] | None = None) -> None:
+async def send_email(route: str, participant: str, code: str | None = None, keys: dict[str, ...] | None = None) -> None:
     """
     Отправляет письмо по эл. почте
 
     :param route: 'main' или 'guest' -- два разных шаблона письма для лицеистов/сотрудников и гостей Ярмарки
     :param participant: почта получателя
-    :param code: код верификации пользователя
+    :param code: код верификации пользователя (по умолчанию генерируется рандомно)
     :param keys: словарь ключей для замены в итоговом письме (выставляется по умолчанию)
     :return: ничего (может вызвать ошибку выполнения)
     """
@@ -55,13 +46,14 @@ async def send_email(route: str, participant: str, code: str | int, keys: dict[s
     payload = dict()
     if keys is not None:
         payload["keys"] = jwt_encode(keys, CONFIGURATION.JWT_KEY, algorithm="HS256")
+    if code is not None:
+        payload["code"] = code
     payload["route"] = route
     payload["email"] = participant
-    payload["code"] = code
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/reg/email/send",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/email/send",
                 params=payload
         ) as response:
             if response.status >= 400:
@@ -93,9 +85,9 @@ async def new(*, name: str, login: str | None, password: str | None, group: str,
         payload["login"] = login
         payload["password"] = password
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/reg/user",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/user",
                 params=payload
         ) as response:
             json = await response.json()

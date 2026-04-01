@@ -1,6 +1,7 @@
 from aiohttp import ClientResponse
 from aiofiles import open as a_open
 
+
 async def save_iterative(response: ClientResponse, path: str, chunk: int):
     """
     Сохраняет контент response по пути path по чанкам (см. CONFIGURATION)

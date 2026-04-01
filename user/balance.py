@@ -1,16 +1,7 @@
 from aiohttp import ClientSession, TCPConnector
-from ssl import create_default_context as ssl_create_default_context, CERT_NONE
 
 from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
-
-host = CONFIGURATION.HOST
-port = CONFIGURATION.PORT
-cache_path = CONFIGURATION.CACHEPATH
-
-ssl_context = ssl_create_default_context()
-ssl_context.check_hostname = False
-ssl_context.verify_mode = CERT_NONE
 
 
 async def view(ID: int) -> int:
@@ -21,9 +12,9 @@ async def view(ID: int) -> int:
     :return: число
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/user/balance",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/balance",
                 params={"ID": ID}
         ) as response:
             json = await response.json()
@@ -52,9 +43,9 @@ async def deposit(ID: int, value: int, agent_id: int | None = None) -> None:
     payload['ID'] = ID
     payload['value'] = value
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/user/deposit",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/deposit",
                 params=payload
         ) as response:
             if response.status >= 400:
@@ -87,9 +78,9 @@ async def transfer(ID_out: int, ID_in: int | str, amount: int) -> None:
     else:
         payload['mode'] = 'b'  # buy
 
-    async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{host}:{port}/user/transfer",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/transfer",
                 params=payload
         ) as response:
             if response.status >= 400:
