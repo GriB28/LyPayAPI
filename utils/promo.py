@@ -1,7 +1,7 @@
 from aiohttp import ClientSession, TCPConnector
 
 from ..__config__ import CONFIGURATION
-from ..__exceptions__ import APIError, IDNotFound
+from ..__exceptions__ import APIError
 
 
 async def get_all() -> list[dict[str, ...]]:
@@ -23,7 +23,7 @@ async def get_all() -> list[dict[str, ...]]:
         async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/promo/all") as response:
             json = await response.json()
             if response.status >= 400:
-                raise IDNotFound(get_all, response.status, json)
+                raise APIError(get_all, response.status, json)
 
             return json['all']
 
@@ -51,7 +51,7 @@ async def get(ID: str) -> dict[str, ...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise IDNotFound(get, response.status, json)
+                raise APIError(get, response.status, json)
 
             return json
 
