@@ -41,13 +41,13 @@ async def check_email_record(email: str) -> dict[str, ...]:
             return json
 
 
-async def send_email(route: str, participant: str, code: str | int, keys: dict[str, ...] | None = None) -> None:
+async def send_email(route: str, participant: str, code: str | None = None, keys: dict[str, ...] | None = None) -> None:
     """
     Отправляет письмо по эл. почте
 
     :param route: 'main' или 'guest' -- два разных шаблона письма для лицеистов/сотрудников и гостей Ярмарки
     :param participant: почта получателя
-    :param code: код верификации пользователя
+    :param code: код верификации пользователя (по умолчанию генерируется рандомно)
     :param keys: словарь ключей для замены в итоговом письме (выставляется по умолчанию)
     :return: ничего (может вызвать ошибку выполнения)
     """
@@ -55,9 +55,10 @@ async def send_email(route: str, participant: str, code: str | int, keys: dict[s
     payload = dict()
     if keys is not None:
         payload["keys"] = jwt_encode(keys, CONFIGURATION.JWT_KEY, algorithm="HS256")
+    if code is not None:
+        payload["code"] = code
     payload["route"] = route
     payload["email"] = participant
-    payload["code"] = code
 
     async with ClientSession(connector=TCPConnector(ssl=ssl_context)) as session:
         async with session.get(

@@ -53,11 +53,12 @@ async def get_ID() -> str:
             return json["ID"]
 
 
-async def send_email(participant: str, keys: dict[str, ...] | None = None) -> None:
+async def send_email(participant: str, code: str | None = None, keys: dict[str, ...] | None = None) -> None:
     """
     Отправляет письмо по эл. почте
 
     :param participant: почта получателя
+    :param code: код доступа (по умолчанию генерируется рандомный)
     :param keys: словарь ключей для замены в итоговом письме (выставляется по умолчанию)
     :return: ничего (может вызвать ошибку выполнения)
     """
@@ -65,6 +66,8 @@ async def send_email(participant: str, keys: dict[str, ...] | None = None) -> No
     payload = dict()
     if keys is not None:
         payload["keys"] = jwt_encode(keys, CONFIGURATION.JWT_KEY, algorithm="HS256")
+    if code is not None:
+        payload["code"] = code
     payload["route"] = "shopkeeper"
     payload["email"] = participant
 
