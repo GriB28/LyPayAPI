@@ -16,7 +16,7 @@ class APIError(Exception):
 
     def form_str_message(self, custom_message: str | None = None) -> str:
         return f"""\
-Получен код HTTP{self.status_code} при вызове {self.method}. \
+Получен код HTTP:{self.status_code} при вызове {self.method}. \
 Сообщение ядра: {self.error_code} {
         f"({custom_message})" if custom_message is not None and len(custom_message) > 0 else
         (f"({self.message})" if self.message is not None and len(self.message) > 0 else "")
