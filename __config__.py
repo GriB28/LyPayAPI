@@ -19,4 +19,4 @@ class CONFIGURATION:
 
 VERSION = "v2.4.2a"
 NAME = "API Release"
-BUILD = 13
+BUILD = 13.1
