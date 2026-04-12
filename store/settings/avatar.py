@@ -9,12 +9,13 @@ from ...__exceptions__ import APIError
 from ...scripts.mem import save_iterative
 
 
-async def get(ID: str) -> str | None:
+async def get(ID: str) -> tuple[str, bool] | None:
     """
     Запрос данных об аватаре магазина
 
     :param ID: ID магазина
-    :return: None, если аватара нет (или больше нет), в противном случае -- путь до файла с кэшем аватара.
+    :return: None, если аватара нет (или больше нет), в противном случае -- путь до файла с кэшем аватара и
+    флаг обновления (True, если обновлён, False, если нет).
     """
 
     path = CONFIGURATION.CACHEPATH + f"stores_media_{ID}.jpg"
@@ -41,9 +42,11 @@ async def get(ID: str) -> str | None:
                     remove(path)
                 return None
 
+            flag = False
             if json['result'] != "avatar didn't change":
                 await save_iterative(response, path, CONFIGURATION.CHUNK_SIZE)
-            return path
+                flag = True
+            return path, flag
 
 
 async def update(ID: str, media_path: str):
