@@ -19,4 +19,4 @@ class CONFIGURATION:
 
 VERSION = "v2.5a"
 NAME = "API Update 1"
-BUILD = 14
+BUILD = 15
