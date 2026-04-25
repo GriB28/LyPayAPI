@@ -40,6 +40,38 @@ async def get(ID: int) -> dict[str, ...]:
             return json
 
 
+async def get_by_email(email: str) -> dict[str, ...]:
+    """
+    Запрос данных о пользователе в следующем формате:
+
+    | {
+    | "ID": int,
+    | "name": str,
+    | "login": str | None,
+    | "password": str | None,
+    | "class": str,
+    | "email": str,
+    | "tag": str | None,
+    | "balance": int,
+    | "owner": int
+    | }
+
+    :param email: email пользователя
+    :return: словарь с данными пользователя из таблицы ``database.USERS``
+    """
+
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+        async with session.get(
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/get",
+                params={"email": email}
+        ) as response:
+            json = await response.json()
+            if response.status >= 400:
+                raise APIError.get(get, response.status, json)
+
+            return json
+
+
 async def get_all() -> list[int]:
     """
     Запрос всех существующих ID пользователей
