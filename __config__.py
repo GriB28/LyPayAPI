@@ -17,6 +17,6 @@ class CONFIGURATION:
     SSL.verify_mode = CERT_NONE
 
 
-VERSION = "v2.4.2a"
-NAME = "API Release"
-BUILD = 13.1
+VERSION = "v2.5a"
+NAME = "API Update 1"
+BUILD = 14

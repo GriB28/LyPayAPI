@@ -11,14 +11,14 @@ from ...scripts.mem import save_iterative
 
 async def get(ID: str) -> tuple[str, bool] | None:
     """
-    Запрос данных об аватаре магазина
+    Запрос данных об аватаре пользователя
 
-    :param ID: ID магазина
+    :param ID: ID пользователя
     :return: None, если аватара нет (или больше нет), в противном случае -- путь до файла с кэшем аватара и
     флаг обновления (True, если обновлён, False, если нет).
     """
 
-    path = CONFIGURATION.CACHEPATH + f"stores_media_{ID}.jpg"
+    path = CONFIGURATION.CACHEPATH + f"users_media_{ID}.jpg"
     payload = dict()
     payload["ID"] = ID
     if exists(path):
@@ -26,7 +26,7 @@ async def get(ID: str) -> tuple[str, bool] | None:
 
     async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/avatar/get",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/settings/avatar/get",
                 params=payload
         ) as response:
             if "json" in response.content_type:
@@ -51,9 +51,9 @@ async def get(ID: str) -> tuple[str, bool] | None:
 
 async def update(ID: str, media_path: str):
     """
-    Обновление аватарки магазина
+    Обновление аватарки пользователя
 
-    :param ID: ID магазина
+    :param ID: ID пользователя
     :param media_path: путь (абсолютный) до файла с аватаром
     :return: ничего (может вызвать ошибку выполнения)
     """
@@ -69,7 +69,7 @@ async def update(ID: str, media_path: str):
 
     async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.post(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/avatar/upd",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/settings/avatar/upd",
                 params={"ID": ID},
                 data=form
         ) as response:
@@ -79,15 +79,15 @@ async def update(ID: str, media_path: str):
 
 async def delete(ID: str):
     """
-    Удаление аватарки магазина
+    Удаление аватарки пользователя
 
-    :param ID: ID магазина
+    :param ID: ID пользователя
     :return: ничего (может вызвать ошибку выполнения)
     """
 
     async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/avatar/remove",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/settings/avatar/remove",
                 params={"ID": ID}
         ) as response:
             if response.status >= 400:
