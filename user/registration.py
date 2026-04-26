@@ -60,7 +60,27 @@ async def send_email(route: str, participant: str, code: str | None = None, keys
                 raise APIError.get(send_email, response.status, await response.json())
 
 
-async def new(*, name: str, login: str | None, password: str | None, group: str, email: str, tag: str | None, owner_flag: str) -> int:
+async def check_code(code: str) -> str:
+    """
+    Проверяет код регистрации пользователя
+
+    :param code: код для проверки
+    :return: эл. почту, на которую был прислан этот код. При этом никакие записи не удаляются,
+    происходит только проверка
+    """
+
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+        async with session.get(
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/code",
+                params={"code": code}
+        ) as response:
+            json = await response.json()
+            if response.status >= 400:
+                raise APIError.get(check_code, response.status, json)
+
+            return json["email"]
+
+async def new(*, name: str, login: str | None, password: str | None, group: str, email: str, tag: str | None = None, owner_flag: str) -> int:
     """
     Регистрация нового пользователя
 

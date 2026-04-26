@@ -17,7 +17,7 @@ async def get(ID: int) -> dict[str, ...]:
     | "name": str,
     | "login": str | None,
     | "password": str | None,
-    | "class": str,
+    | "group": str,
     | "email": str,
     | "tag": str | None,
     | "balance": int,
@@ -49,7 +49,7 @@ async def get_by_email(email: str) -> dict[str, ...]:
     | "name": str,
     | "login": str | None,
     | "password": str | None,
-    | "class": str,
+    | "group": str,
     | "email": str,
     | "tag": str | None,
     | "balance": int,
@@ -67,7 +67,39 @@ async def get_by_email(email: str) -> dict[str, ...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get, response.status, json)
+                raise APIError.get(get_by_email, response.status, json)
+
+            return json
+
+
+async def get_by_login(login: str) -> dict[str, ...]:
+    """
+    Запрос данных о пользователе в следующем формате:
+
+    | {
+    | "ID": int,
+    | "name": str,
+    | "login": str | None,
+    | "password": str | None,
+    | "group": str,
+    | "email": str,
+    | "tag": str | None,
+    | "balance": int,
+    | "owner": int
+    | }
+
+    :param login: login пользователя
+    :return: словарь с данными пользователя из таблицы ``database.USERS``
+    """
+
+    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+        async with session.get(
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/get",
+                params={"login": login}
+        ) as response:
+            json = await response.json()
+            if response.status >= 400:
+                raise APIError.get(get_by_login, response.status, json)
 
             return json
 

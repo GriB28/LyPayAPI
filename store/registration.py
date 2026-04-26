@@ -70,7 +70,7 @@ async def send_email(participant: str, code: str | None = None, keys: dict[str, 
                 raise APIError.get(send_email, response.status, await response.json())
 
 
-async def new(*, storeID: str, name: str, hostID: int, email: str, link: str) -> None:
+async def new(*, storeID: str, name: str, hostID: int, email: str) -> None:
     """
     Регистрация нового магазина (описание по умолчанию -- ``""``)
 
@@ -78,7 +78,6 @@ async def new(*, storeID: str, name: str, hostID: int, email: str, link: str) ->
     :param name: название магазина
     :param hostID: ID владельца магазина
     :param email: эл. почта владельца магазина
-    :param link: код регистрации
     :return: ничего (может вызвать ошибку выполнения)
     """
 
@@ -89,8 +88,7 @@ async def new(*, storeID: str, name: str, hostID: int, email: str, link: str) ->
                     "storeID": storeID,
                     "name": name,
                     "hostID": hostID,
-                    "email": email,
-                    "link": link
+                    "email": email
                 }
         ) as response:
             if response.status >= 400:
