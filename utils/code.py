@@ -4,7 +4,7 @@ from random import choice as r_choice
 alphabet = tuple("0123456789abcdefghijklmnopqrstuvwxyz")
 
 
-def generate(length: int = 24):
+def generate(length: int = 24) -> str:
     """
     Создаёт цифро-буквенный код, состоящий из символов ``0-9`` и ``a-z``
 
