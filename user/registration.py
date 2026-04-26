@@ -85,11 +85,11 @@ async def new(*, name: str, login: str | None, password: str | None, group: str,
     Регистрация нового пользователя
 
     :param name: имя (по таблцие ``database.CORPORATION``)
-    :param login: логин (тестовая сборка: пропущено)
-    :param password: пароль (тестовая сборка: пропущено)
+    :param login: логин
+    :param password: пароль
     :param group: группа (по таблице ``database.CORPORATION``)
     :param email: эл. почта
-    :param tag: telegram tag
+    :param tag: telegram tag (по умолчанию пропущен)
     :param owner_flag: 'tg_owner', 'tg_guest', 'web_owner', 'web_guest' или 'integration' (для каждой платформы клиент должен сам контролировать этот аргумент)
     :return: ID новой записи
     """
