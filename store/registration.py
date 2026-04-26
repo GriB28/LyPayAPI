@@ -6,13 +6,13 @@ from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
 
 
-async def check_link(link: str) -> str:
+async def check_link(email: str, link: str) -> bool:
     """
     Проверяет код регистрации магазина
 
+    :param email: почта для проверки
     :param link: код для проверки
-    :return: эл. почту, на которую был прислан этот код. При этом никакие записи не удаляются,
-    происходит только проверка
+    :return: статус проверки (True/False)
     """
 
     async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
@@ -24,7 +24,7 @@ async def check_link(link: str) -> str:
             if response.status >= 400:
                 raise APIError.get(check_link, response.status, json)
 
-            return json["email"]
+            return json["email"] == email
 
 
 async def get_ID() -> str:
