@@ -1,6 +1,6 @@
 from aiohttp import ClientSession, TCPConnector
 
-from os.path import getmtime, exists
+from os.path import getmtime, exists, join
 from os import remove
 
 from ..__config__ import CONFIGURATION
@@ -144,7 +144,7 @@ async def qr(ID: int) -> str:
     :return: абсолютный путь до файла (независимо от того, было обновление или нет)
     """
 
-    path = CONFIGURATION.CACHEPATH + f"{ID}.png"
+    path = join(CONFIGURATION.CACHEPATH, f"{ID}.png")
     if exists(path):
         async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
             async with session.get(

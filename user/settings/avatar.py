@@ -1,6 +1,6 @@
 from aiohttp import ClientSession, TCPConnector, FormData
 
-from os.path import getmtime, exists
+from os.path import getmtime, exists, join
 from os import remove
 from aiofiles import open as a_open
 
@@ -18,7 +18,7 @@ async def get(ID: str) -> tuple[str, bool] | None:
     флаг обновления (True, если обновлён, False, если нет).
     """
 
-    path = CONFIGURATION.CACHEPATH + f"users_media_{ID}.jpg"
+    path = join(CONFIGURATION.CACHEPATH, f"users_media_{ID}.jpg")
     payload = dict()
     payload["ID"] = ID
     if exists(path):
