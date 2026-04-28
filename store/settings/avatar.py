@@ -18,7 +18,7 @@ async def get(ID: str) -> tuple[str, bool] | None:
     флаг обновления (True, если обновлён, False, если нет).
     """
 
-    path = join(CONFIGURATION.CACHEPATH, f"stores_media_{ID}.jpg")
+    path = join(CONFIGURATION.CACHEPATH, "stores_media", f"{ID}.jpg")
     payload = dict()
     payload["ID"] = ID
     if exists(path):

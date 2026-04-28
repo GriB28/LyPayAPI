@@ -7,6 +7,7 @@ from aiofiles import open as a_open
 from ...__config__ import CONFIGURATION
 from ...__exceptions__ import APIError
 from ...scripts.mem import save_iterative
+from ...utils.hash import code
 
 
 async def get(ID: str) -> tuple[str, bool] | None:
@@ -18,7 +19,7 @@ async def get(ID: str) -> tuple[str, bool] | None:
     флаг обновления (True, если обновлён, False, если нет).
     """
 
-    path = join(CONFIGURATION.CACHEPATH, f"users_media_{ID}.jpg")
+    path = join(CONFIGURATION.CACHEPATH, "users_media", f"{code(ID)}.jpg")
     payload = dict()
     payload["ID"] = ID
     if exists(path):
