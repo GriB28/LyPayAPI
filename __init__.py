@@ -14,6 +14,7 @@ from . import utils
 for path in (
     CONFIGURATION.CACHEPATH,
     join(CONFIGURATION.CACHEPATH, "users_media"),
+    join(CONFIGURATION.CACHEPATH, "users_qr"),
     join(CONFIGURATION.CACHEPATH, "stores_media")
 ):
     if not exists(path):
