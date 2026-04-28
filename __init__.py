@@ -1,5 +1,5 @@
 from os import mkdir
-from os.path import exists
+from os.path import exists, join
 
 from .__config__ import CONFIGURATION, VERSION, NAME, BUILD
 from . import __exceptions__ as exceptions
@@ -11,8 +11,14 @@ from . import auction
 from . import utils
 
 
-if not exists(CONFIGURATION.CACHEPATH):
-    mkdir(CONFIGURATION.CACHEPATH)
+for path in (
+    CONFIGURATION.CACHEPATH,
+    join(CONFIGURATION.CACHEPATH, "users_media"),
+    join(CONFIGURATION.CACHEPATH, "users_qr"),
+    join(CONFIGURATION.CACHEPATH, "stores_media")
+):
+    if not exists(path):
+        mkdir(path)
 
 
 def __help__():

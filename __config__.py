@@ -1,9 +1,10 @@
 from ssl import create_default_context as ssl_create_default_context, CERT_NONE
 from os import getcwd
+from os.path import join
 
 
 class CONFIGURATION:
-    CACHEPATH = getcwd() + '/lypay_api_cache/'
+    CACHEPATH = join(getcwd(), 'lypay_api_cache')
 
     CHUNK_SIZE = 512
 
@@ -19,4 +20,4 @@ class CONFIGURATION:
 
 VERSION = "v2.5a"
 NAME = "API Update 1"
-BUILD = 16
+BUILD = 17

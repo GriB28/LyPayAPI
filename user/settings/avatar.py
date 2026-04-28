@@ -1,15 +1,16 @@
 from aiohttp import ClientSession, TCPConnector, FormData
 
-from os.path import getmtime, exists
+from os.path import getmtime, exists, join
 from os import remove
 from aiofiles import open as a_open
 
 from ...__config__ import CONFIGURATION
 from ...__exceptions__ import APIError
 from ...scripts.mem import save_iterative
+from ...utils.hash import code
 
 
-async def get(ID: str) -> tuple[str, bool] | None:
+async def get(ID: int) -> tuple[str, bool] | None:
     """
     Запрос данных об аватаре пользователя
 
@@ -18,7 +19,7 @@ async def get(ID: str) -> tuple[str, bool] | None:
     флаг обновления (True, если обновлён, False, если нет).
     """
 
-    path = CONFIGURATION.CACHEPATH + f"users_media_{ID}.jpg"
+    path = join(CONFIGURATION.CACHEPATH, "users_media", f"{code(ID)}.jpg")
     payload = dict()
     payload["ID"] = ID
     if exists(path):
@@ -49,7 +50,7 @@ async def get(ID: str) -> tuple[str, bool] | None:
             return path, flag
 
 
-async def update(ID: str, media_path: str):
+async def update(ID: int, media_path: str):
     """
     Обновление аватарки пользователя
 
@@ -77,7 +78,7 @@ async def update(ID: str, media_path: str):
                 raise APIError.get(update, response.status, await response.json())
 
 
-async def delete(ID: str):
+async def delete(ID: int):
     """
     Удаление аватарки пользователя
 

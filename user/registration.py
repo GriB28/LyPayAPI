@@ -60,13 +60,13 @@ async def send_email(route: str, participant: str, code: str | None = None, keys
                 raise APIError.get(send_email, response.status, await response.json())
 
 
-async def check_code(code: str) -> str:
+async def check_code(email: str, code: str) -> bool:
     """
     Проверяет код регистрации пользователя
 
+    :param email: почта для проверки
     :param code: код для проверки
-    :return: эл. почту, на которую был прислан этот код. При этом никакие записи не удаляются,
-    происходит только проверка
+    :return: статус проверки (True/False)
     """
 
     async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
@@ -78,18 +78,18 @@ async def check_code(code: str) -> str:
             if response.status >= 400:
                 raise APIError.get(check_code, response.status, json)
 
-            return json["email"]
+            return json["email"] == email
 
 async def new(*, name: str, login: str | None, password: str | None, group: str, email: str, tag: str | None = None, owner_flag: str) -> int:
     """
     Регистрация нового пользователя
 
     :param name: имя (по таблцие ``database.CORPORATION``)
-    :param login: логин (тестовая сборка: пропущено)
-    :param password: пароль (тестовая сборка: пропущено)
+    :param login: логин
+    :param password: пароль
     :param group: группа (по таблице ``database.CORPORATION``)
     :param email: эл. почта
-    :param tag: telegram tag
+    :param tag: telegram tag (по умолчанию пропущен)
     :param owner_flag: 'tg_owner', 'tg_guest', 'web_owner', 'web_guest' или 'integration' (для каждой платформы клиент должен сам контролировать этот аргумент)
     :return: ID новой записи
     """
