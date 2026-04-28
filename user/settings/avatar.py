@@ -10,7 +10,7 @@ from ...scripts.mem import save_iterative
 from ...utils.hash import code
 
 
-async def get(ID: str) -> tuple[str, bool] | None:
+async def get(ID: int) -> tuple[str, bool] | None:
     """
     Запрос данных об аватаре пользователя
 
@@ -50,7 +50,7 @@ async def get(ID: str) -> tuple[str, bool] | None:
             return path, flag
 
 
-async def update(ID: str, media_path: str):
+async def update(ID: int, media_path: str):
     """
     Обновление аватарки пользователя
 
@@ -78,7 +78,7 @@ async def update(ID: str, media_path: str):
                 raise APIError.get(update, response.status, await response.json())
 
 
-async def delete(ID: str):
+async def delete(ID: int):
     """
     Удаление аватарки пользователя
 
