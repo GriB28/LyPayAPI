@@ -1,12 +1,11 @@
 from ssl import create_default_context as ssl_create_default_context, CERT_NONE
-from os import getcwd, getenv
-from os.path import join
+from os import getenv
 from dotenv import load_dotenv
 
 load_dotenv()
 
 class CONFIGURATION:
-    CACHEPATH = join(getcwd(), 'lypay_api_cache')
+    CACHEPATH = 'media'
 
     CHUNK_SIZE = 512
 
