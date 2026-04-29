@@ -10,6 +10,8 @@ from . import admin
 from . import auction
 from . import utils
 
+from . import mst
+
 
 for path in (
     CONFIGURATION.CACHEPATH,
