@@ -1,8 +1,8 @@
 from aiohttp import ClientSession, TCPConnector
 
-from os import urandom
 from hashlib import sha256
 
+from .scripts import random_data
 from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
 
@@ -14,7 +14,7 @@ async def main() -> tuple[str, str]:
     :return: две строки, первая -- полученный хэш, вторая -- исходный
     """
 
-    data = _generate_random_data(10)
+    data = random_data(10 * 1024)
     data_hash = sha256(data).hexdigest()
 
     async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
@@ -27,14 +27,3 @@ async def main() -> tuple[str, str]:
                 raise APIError.get(main, response.status, json)
 
             return json["hash"], data_hash
-
-
-def _generate_random_data(N: int) -> bytes:
-    """
-    Создаёт ``N`` мегабайт случайной информации
-
-    :param N: размер данных
-    :return: мусорные данные
-    """
-
-    return urandom(1024 * 1024 * N)
