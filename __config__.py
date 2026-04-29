@@ -19,6 +19,6 @@ class CONFIGURATION:
     SSL.verify_mode = CERT_NONE
 
 
-VERSION = "v2.5a"
-NAME = "API Update 1"
-BUILD = 18
+VERSION = "v2.5a-mst"
+NAME = "MST"
+BUILD = 18.1
