@@ -11,14 +11,14 @@ class CONFIGURATION:
 
     JWT_KEY = "crimsonmoonshinesuponatownthatissmearedinblood-criedthedivagivenintolament"
 
-    HOST = getenv("LYPAY_HOST")
-    PORT = int(getenv("LYPAY_PORT"))
+    HOST = getenv("LYPAY_CORE_HOST")
+    PORT = int(getenv("LYPAY_CORE_PORT"))
 
     SSL = ssl_create_default_context()
     SSL.check_hostname = False
     SSL.verify_mode = CERT_NONE
 
 
-VERSION = "v2.5a-mst"
-NAME = "MST"
-BUILD = 18.1
+VERSION = "v2.5a"
+NAME = "FullStack"
+BUILD = 19
