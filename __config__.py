@@ -11,8 +11,8 @@ class CONFIGURATION:
 
     JWT_KEY = "crimsonmoonshinesuponatownthatissmearedinblood-criedthedivagivenintolament"
 
-    HOST = getenv("LYPAY_HOST")
-    PORT = int(getenv("LYPAY_PORT"))
+    HOST = getenv("LYPAY_CORE_HOST")
+    PORT = int(getenv("LYPAY_CORE_PORT"))
 
     SSL = ssl_create_default_context()
     SSL.check_hostname = False
