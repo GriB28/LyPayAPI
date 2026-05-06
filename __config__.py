@@ -21,4 +21,4 @@ class CONFIGURATION:
 
 VERSION = "v2.5a"
 NAME = "FullStack"
-BUILD = 19
+BUILD = 20
