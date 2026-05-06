@@ -13,7 +13,7 @@ class CONFIGURATION:
 
     HOST = getenv("LYPAY_CORE_HOST")
     PORT = int(getenv("LYPAY_CORE_PORT"))
-    TOKEN = getenv("LYPAY_CORE_TOKEN")
+    TOKEN = getenv("LYPAY_CORE_TOKEN") if getenv("LYPAY_CORE_TOKEN") != '' else None
 
     SSL = ssl_create_default_context()
     SSL.check_hostname = False
