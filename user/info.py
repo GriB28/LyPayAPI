@@ -1,10 +1,9 @@
-from aiohttp import ClientSession, TCPConnector
-
 from os.path import getmtime, exists, join
 from os import remove
 
-from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
+from ..__config__ import CONFIGURATION
+from ..scripts.sender import create_session
 from ..scripts.mem import save_iterative
 
 
@@ -28,7 +27,7 @@ async def get(ID: int) -> dict[str, ...]:
     :return: словарь с данными пользователя из таблицы ``database.USERS``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/get",
                 params={"ID": ID}
@@ -60,7 +59,7 @@ async def get_by_email(email: str) -> dict[str, ...]:
     :return: словарь с данными пользователя из таблицы ``database.USERS``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/get",
                 params={"email": email}
@@ -92,7 +91,7 @@ async def get_by_login(login: str) -> dict[str, ...]:
     :return: словарь с данными пользователя из таблицы ``database.USERS``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/get",
                 params={"login": login}
@@ -111,7 +110,7 @@ async def get_all() -> list[int]:
     :return: список с ID из таблицы ``database.USERS``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/all") as response:
             json = await response.json()
             if response.status >= 400:
@@ -125,7 +124,7 @@ async def _request_qr(ID: int, path: str) -> None:
     Внутренняя функция, не рекомендуется использовать без обёртки `qr()`
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/qr/get",
                 params={"ID": ID}
@@ -146,7 +145,7 @@ async def qr(ID: int) -> str:
 
     path = join(CONFIGURATION.CACHEPATH, "users_qr", f"{ID}.png")
     if exists(path):
-        async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+        async with create_session() as session:
             async with session.get(
                     f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/qr/check",
                     params={"ID": ID, "unix": getmtime(path)}

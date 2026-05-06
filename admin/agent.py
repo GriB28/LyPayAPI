@@ -1,7 +1,6 @@
-from aiohttp import ClientSession, TCPConnector
-
-from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
+from ..__config__ import CONFIGURATION
+from ..scripts.sender import create_session
 
 
 async def is_agent(userID: int) -> bool:
@@ -12,7 +11,7 @@ async def is_agent(userID: int) -> bool:
     :return: True, если является; False, если нет
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/agent/check",
                 params={"userID": userID}
@@ -34,7 +33,7 @@ async def deposit(userID: int, amount: int, agentID: int) -> None:
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/agent/deposit",
                 params={"userID": userID, "amount": amount, "agentID": agentID}

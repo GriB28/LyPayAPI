@@ -1,7 +1,6 @@
-from aiohttp import ClientSession, TCPConnector
-
-from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
+from ..__config__ import CONFIGURATION
+from ..scripts.sender import create_session
 
 
 async def get(ID: str) -> dict[str, ...]:
@@ -20,7 +19,7 @@ async def get(ID: str) -> dict[str, ...]:
     :return: словарь с данными об айтеме из таблицы ``database.ITEMS``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/items/get",
                 params={"itemID": ID}
@@ -41,7 +40,7 @@ async def get_all(storeID: str, active_filter: bool = True) -> list[str]:
     :return: список ID айтемов из таблицы ``database.ITEMS``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/items/all",
                 params={"storeID": storeID, "active_filter": int(active_filter)}
@@ -63,7 +62,7 @@ async def add(storeID: str, name: str, price: int) -> str:
     :return: ID созданного айтема
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/items/add",
                 params={"storeID": storeID, "name": name, "price": price}
@@ -83,7 +82,7 @@ async def remove(itemID: str) -> None:
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/items/rem",
                 params={"itemID": itemID}
@@ -112,7 +111,7 @@ async def edit(itemID: str, name: str | None = None, price: int | None = None) -
         raise ValueError("В вызове функции promo.edit должен присутствовать хотя бы один аргумент кроме ID.")
     payload["itemID"] = itemID
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/items/edit",
                 params=payload

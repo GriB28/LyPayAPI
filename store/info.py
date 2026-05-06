@@ -1,7 +1,6 @@
-from aiohttp import ClientSession, TCPConnector
-
 from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
+from ..scripts.sender import create_session
 
 
 async def get(ID: str) -> dict[str, ...]:
@@ -24,7 +23,7 @@ async def get(ID: str) -> dict[str, ...]:
     :return: словарь с данными магазина из таблицы ``database.STORES``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/info/get",
                 params={"ID": ID}
@@ -43,7 +42,7 @@ async def get_all_ids() -> list[str]:
     :return: список с ID из таблицы ``database.STORES``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/info/all/stores") as response:
             json = await response.json()
             if response.status >= 400:
@@ -59,7 +58,7 @@ async def get_all_shopkeepers() -> list[int]:
     :return: список с userID из таблицы ``database.SHOPKEEPERS``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/info/all/shopkeepers") as response:
             json = await response.json()
             if response.status >= 400:

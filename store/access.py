@@ -1,7 +1,6 @@
-from aiohttp import ClientSession, TCPConnector
-
-from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
+from ..__config__ import CONFIGURATION
+from ..scripts.sender import create_session
 
 
 async def get_list(storeID: str) -> list[int]:
@@ -12,7 +11,7 @@ async def get_list(storeID: str) -> list[int]:
     :return: список userID тех пользователей, которые имеют доступ к магазину (из таблицы``database.SHOPKEEPERS``)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/access/list",
                 params={"storeID": storeID}
@@ -33,7 +32,7 @@ async def add(storeID: str, userID: int) -> None:
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/access/add",
                 params={"storeID": storeID, "userID": userID}
@@ -51,7 +50,7 @@ async def remove(storeID: str, userID: int) -> None:
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/access/rem",
                 params={"storeID": storeID, "userID": userID}

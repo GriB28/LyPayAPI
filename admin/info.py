@@ -1,10 +1,9 @@
-from aiohttp import ClientSession, TCPConnector
-
 from psutil import cpu_percent as CPU, virtual_memory as RAM, process_iter
 from platform import system as get_platform_name
 
-from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
+from ..__config__ import CONFIGURATION
+from ..scripts.sender import create_session
 
 _platform_name = get_platform_name()
 
@@ -26,7 +25,7 @@ async def core_machine() -> dict[str, ...]:
     :return: словарь с данными о машине ядра
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/machine") as response:
             json = await response.json()
             if response.status >= 400:
@@ -73,7 +72,7 @@ async def db_query(db_type: str, query: str) -> list[...]:
     :return: словарь с данными о машине ядра
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/db",
                 params={"db_type": db_type, "query": query}

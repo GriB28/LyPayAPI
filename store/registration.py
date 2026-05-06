@@ -1,9 +1,8 @@
-from aiohttp import ClientSession, TCPConnector
+from ..__exceptions__ import APIError
+from ..__config__ import CONFIGURATION
+from ..scripts.sender import create_session
 
 from jwt import encode as jwt_encode
-
-from ..__config__ import CONFIGURATION
-from ..__exceptions__ import APIError
 
 
 async def check_link(email: str, link: str) -> bool:
@@ -15,7 +14,7 @@ async def check_link(email: str, link: str) -> bool:
     :return: статус проверки (True/False)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/info/link",
                 params={"link": link}
@@ -34,7 +33,7 @@ async def get_ID() -> str:
     :return: незанятый ID магазина
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/store_id") as response:
             json = await response.json()
             if response.status >= 400:
@@ -61,7 +60,7 @@ async def send_email(participant: str, code: str | None = None, keys: dict[str, 
     payload["route"] = "shopkeeper"
     payload["email"] = participant
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/email/send",
                 params=payload
@@ -81,7 +80,7 @@ async def new(*, storeID: str, name: str, hostID: int, email: str) -> None:
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/store",
                 params={

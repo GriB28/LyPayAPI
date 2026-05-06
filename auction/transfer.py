@@ -1,7 +1,6 @@
-from aiohttp import ClientSession, TCPConnector
-
-from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
+from ..__config__ import CONFIGURATION
+from ..scripts.sender import create_session
 
 
 async def transfer(ID_out: str, ID_in: str, amount: int) -> None:
@@ -14,7 +13,7 @@ async def transfer(ID_out: str, ID_in: str, amount: int) -> None:
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/auc/transfer",
                 params={"ID_out": ID_out, "ID_in": ID_in, "amount": amount}

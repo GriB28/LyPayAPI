@@ -1,7 +1,6 @@
-from aiohttp import ClientSession, TCPConnector
-
 from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError, IDNotFound
+from ..scripts.sender import create_session
 
 
 async def check(ID: int, route: str) -> bool:
@@ -40,7 +39,7 @@ async def entry(ID: int, route: str) -> dict[str, ...]:
     """
 
     route = route.strip().lower()
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/fw/{route}",
                 params={"ID": ID}
