@@ -10,7 +10,7 @@ from . import admin
 from . import auction
 from . import utils
 
-from . import mst
+# from . import mst
 
 
 for path in (
