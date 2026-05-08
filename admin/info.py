@@ -66,7 +66,7 @@ async def db_query(db_type: str, query: str) -> list[...]:
 
     :param db_type: 'main' (главная база данных) или 'fw' (файерволл)
     :param query: запрос
-    :return: словарь с данными о машине ядра
+    :return: результат запроса
     """
 
     async with create_session() as session:
