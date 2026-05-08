@@ -43,12 +43,7 @@ def local_machine() -> dict[str, ...]:
 
     python_processes = list()
     for running_process in process_iter():
-        if running_process.name() == (
-                "python.exe" if _platform_name == 'Windows' else (
-                "python3" if _platform_name == 'Linux' else (
-                "python" if _platform_name == 'Linux' else ""
-                ))
-        ) and len(running_process.cmdline()) > 0:  # and running_process.cmdline()[-1] == lls -- legacy part
+        if running_process.name() in ("python", "python3", "python.exe") and len(running_process.cmdline()) > 0:
             python_processes.append(running_process)
     if len(python_processes) == 0:
         raise APIError.get(local_machine, 404, {"error": "NameError", "message": "no python processes found"})
