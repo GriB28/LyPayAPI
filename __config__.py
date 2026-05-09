@@ -20,6 +20,6 @@ class CONFIGURATION:
     SSL.verify_mode = CERT_NONE
 
 
-VERSION = "v2.5a"
-NAME = "FullStack"
-BUILD = 20
+VERSION = "v2.6a"
+NAME = "Public API"
+BUILD = 21
