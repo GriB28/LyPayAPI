@@ -1,7 +1,7 @@
 from os import mkdir
 from os.path import exists, join
 
-from .__config__ import CONFIGURATION, VERSION, NAME, BUILD
+from .__config__ import CONFIGURATION
 from . import __exceptions__ as exceptions
 
 from . import user
