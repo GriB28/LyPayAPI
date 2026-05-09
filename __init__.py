@@ -9,6 +9,7 @@ from . import store
 from . import admin
 from . import auction
 from . import utils
+from . import fps
 
 # from . import mst
 
