@@ -1,9 +1,8 @@
-from aiohttp import ClientSession, TCPConnector
-
 from jwt import encode as jwt_encode
 
-from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
+from ..__config__ import CONFIGURATION
+from ..scripts.sender import create_session
 
 
 async def check_email_record(email: str) -> dict[str, ...]:
@@ -20,7 +19,7 @@ async def check_email_record(email: str) -> dict[str, ...]:
     :return: словарь с данными пользователя из таблицы ``database.CORPORATION``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/email/corp_record",
                 params={"email": email}
@@ -51,7 +50,7 @@ async def send_email(route: str, participant: str, code: str | None = None, keys
     payload["route"] = route
     payload["email"] = participant
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/email/send",
                 params=payload
@@ -69,7 +68,7 @@ async def check_code(email: str, code: str) -> bool:
     :return: статус проверки (True/False)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/code",
                 params={"code": code}
@@ -105,7 +104,7 @@ async def new(*, name: str, login: str | None, password: str | None, group: str,
         payload["login"] = login
         payload["password"] = password
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/user",
                 params=payload

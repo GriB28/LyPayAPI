@@ -1,10 +1,9 @@
-from aiohttp import ClientSession, TCPConnector
-
 from psutil import cpu_percent as CPU, virtual_memory as RAM, process_iter
 from platform import system as get_platform_name
 
-from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
+from ..__config__ import CONFIGURATION
+from ..scripts.sender import create_session
 
 _platform_name = get_platform_name()
 
@@ -26,7 +25,7 @@ async def core_machine() -> dict[str, ...]:
     :return: словарь с данными о машине ядра
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/machine") as response:
             json = await response.json()
             if response.status >= 400:
@@ -44,10 +43,7 @@ def local_machine() -> dict[str, ...]:
 
     python_processes = list()
     for running_process in process_iter():
-        if running_process.name() == (
-                "python.exe" if _platform_name == 'Windows' else
-                ("python3" if _platform_name == 'Linux' else "")
-        ) and len(running_process.cmdline()) > 0:  # and running_process.cmdline()[-1] == lls -- legacy part
+        if running_process.name() in ("python", "python3", "python.exe") and len(running_process.cmdline()) > 0:
             python_processes.append(running_process)
     if len(python_processes) == 0:
         raise APIError.get(local_machine, 404, {"error": "NameError", "message": "no python processes found"})
@@ -70,10 +66,10 @@ async def db_query(db_type: str, query: str) -> list[...]:
 
     :param db_type: 'main' (главная база данных) или 'fw' (файерволл)
     :param query: запрос
-    :return: словарь с данными о машине ядра
+    :return: результат запроса
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/db",
                 params={"db_type": db_type, "query": query}

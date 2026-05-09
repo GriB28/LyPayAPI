@@ -1,7 +1,6 @@
-from aiohttp import ClientSession, TCPConnector
-
-from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
+from ..__config__ import CONFIGURATION
+from ..scripts.sender import create_session
 
 
 async def get_all() -> list[dict[str, ...]]:
@@ -19,7 +18,7 @@ async def get_all() -> list[dict[str, ...]]:
     :return: список словарей с данными таблицы ``database.PROMO``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/promo/all") as response:
             json = await response.json()
             if response.status >= 400:
@@ -44,7 +43,7 @@ async def get(ID: str) -> dict[str, ...]:
     :return: словарь с данными из таблицы ``database.PROMO``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/promo/get",
                 params={"ID": ID}
@@ -66,7 +65,7 @@ async def add(ID: str, value: int, author: str) -> None:
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/promo/add",
                 params={
@@ -101,7 +100,7 @@ async def edit(ID: str, value: int | None = None, author: str | None = None, act
         raise ValueError("В вызове функции promo.edit должен присутствовать хотя бы один аргумент кроме ID.")
     payload["ID"] = ID
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/promo/edit",
                 params=payload

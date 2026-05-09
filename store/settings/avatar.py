@@ -1,11 +1,12 @@
-from aiohttp import ClientSession, TCPConnector, FormData
+from aiohttp import FormData
 
 from os.path import getmtime, exists, join
 from os import remove
 from aiofiles import open as a_open
 
-from ...__config__ import CONFIGURATION
 from ...__exceptions__ import APIError
+from ...__config__ import CONFIGURATION
+from ...scripts.sender import create_session
 from ...scripts.mem import save_iterative
 
 
@@ -24,7 +25,7 @@ async def get(ID: str) -> tuple[str, bool] | None:
     if exists(path):
         payload["unix"] = getmtime(path)
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/avatar/get",
                 params=payload
@@ -67,7 +68,7 @@ async def update(ID: str, media_path: str):
             content_type=f"image/{media_type}"
         )
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.post(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/avatar/upd",
                 params={"ID": ID},
@@ -85,7 +86,7 @@ async def delete(ID: str):
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/avatar/remove",
                 params={"ID": ID}

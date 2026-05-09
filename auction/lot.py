@@ -1,7 +1,6 @@
-from aiohttp import ClientSession, TCPConnector
-
-from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
+from ..__config__ import CONFIGURATION
+from ..scripts.sender import create_session
 
 
 async def add(name: str, price: int, auctionID: int) -> int:
@@ -14,7 +13,7 @@ async def add(name: str, price: int, auctionID: int) -> int:
     :return: созданный ID лота
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/auc/lot/add",
                 params={"name": name, "price": price, "auctionID": auctionID}
@@ -34,7 +33,7 @@ async def confirm(lotID: int) -> None:
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/auc/lot/confirm",
                 params={"lotID": lotID}

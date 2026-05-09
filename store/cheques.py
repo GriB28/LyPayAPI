@@ -1,9 +1,8 @@
-from aiohttp import ClientSession, TCPConnector
-
 from jwt import encode as jwt_encode
 
 from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
+from ..scripts.sender import create_session
 from ..scripts import j2
 
 
@@ -24,7 +23,7 @@ async def get(chequeID: str) -> dict[str, ...]:
     :return: словарь с данными чека из таблицы ``database.CHEQUES``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/cheques/get",
                 params={"chequeID": chequeID}
@@ -46,7 +45,7 @@ async def get_all(storeID: str, active_filter: bool = True) -> list[str]:
     :return: список ID чеков из таблицы ``database.CHEQUES``
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/cheques/all",
                 params={"storeID": storeID, "active_filter": int(active_filter)}
@@ -73,7 +72,7 @@ async def create(storeID: str, customer: int, items: dict[str, int]) -> str:
     payload["customer"] = customer
     payload["items"] = jwt_encode(items, CONFIGURATION.JWT_KEY, algorithm="HS256")
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/cheques/add",
                 params=payload
@@ -93,7 +92,7 @@ async def cancel(chequeID: str) -> None:
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/cheques/de",
                 params={"chequeID": chequeID}

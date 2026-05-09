@@ -1,7 +1,6 @@
-from aiohttp import ClientSession, TCPConnector
-
-from ..__config__ import CONFIGURATION
 from ..__exceptions__ import APIError
+from ..__config__ import CONFIGURATION
+from ..scripts.sender import create_session
 
 
 async def view(ID: int) -> int:
@@ -12,7 +11,7 @@ async def view(ID: int) -> int:
     :return: число
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/balance",
                 params={"ID": ID}
@@ -43,7 +42,7 @@ async def deposit(ID: int, value: int, agent_id: int | None = None) -> None:
     payload['ID'] = ID
     payload['value'] = value
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/deposit",
                 params=payload
@@ -78,7 +77,7 @@ async def transfer(ID_out: int, ID_in: int | str, amount: int) -> None:
     else:
         payload['mode'] = 'b'  # buy
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/transfer",
                 params=payload

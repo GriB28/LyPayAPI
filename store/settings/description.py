@@ -1,7 +1,6 @@
-from aiohttp import ClientSession, TCPConnector
-
-from ...__config__ import CONFIGURATION
 from ...__exceptions__ import APIError
+from ...__config__ import CONFIGURATION
+from ...scripts.sender import create_session
 
 
 async def get(ID: str) -> str:
@@ -12,7 +11,7 @@ async def get(ID: str) -> str:
     :return: описание
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/desc/get",
                 params={"ID": ID}
@@ -33,7 +32,7 @@ async def update(ID: str, new: str):
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
+    async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/desc/upd",
                 params={"ID": ID, "new": new}
