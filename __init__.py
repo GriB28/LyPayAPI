@@ -22,7 +22,3 @@ for path in (
 ):
     if not exists(path):
         mkdir(path)
-
-
-def __help__():
-    print(f"LyPayAPI {VERSION}{':' + NAME if len(NAME) > 0 else ''} (build {BUILD})")
