@@ -25,7 +25,7 @@ async def get(ID: str) -> dict[str, ...]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/info/get",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/info/get/base",
                 params={"ID": ID}
         ) as response:
             json = await response.json()
@@ -33,6 +33,26 @@ async def get(ID: str) -> dict[str, ...]:
                 raise APIError.get(get, response.status, json)
 
             return json
+
+
+async def get_by_shopkeeper(ID: int) -> str:
+    """
+    Запрос ID магазина по ID продавца
+
+    :param ID: ID продавца
+    :return: ID магазина по таблице ``database.SHOPKEEPERS``
+    """
+
+    async with create_session() as session:
+        async with session.get(
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/info/get/shopkeeper",
+                params={"ID": ID}
+        ) as response:
+            json = await response.json()
+            if response.status >= 400:
+                raise APIError.get(get_by_shopkeeper, response.status, json)
+
+            return json['storeID']
 
 
 async def get_all_ids() -> list[str]:
