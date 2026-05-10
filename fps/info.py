@@ -12,10 +12,10 @@ async def status(ID: str) -> dict[str, ...]:
     | "author": str | int       -- ID автора, int для пользователя, str для магазина
     | "description": str,       -- описание FPS-<=>
     | "amount": int,            -- стоимость
-    | "payed": int,             -- ID оплатившего пользователя (если не оплачен -- null)
-    | "cheque": str,            -- ID привязанного чека (если не оплачен -- null)
+    | "payed": int,             -- ID оплатившего пользователя (если не оплачен -- None)
+    | "cheque": str,            -- ID привязанного чека (если не оплачен или автор -- не магазин, то None)
     | "unix_creation": float,   -- UNIX-timestamp создания FPS-<=>
-    | "unix_payment": float     -- UNIX-timestamp оплаты FPS-<=>
+    | "unix_payment": float     -- UNIX-timestamp оплаты FPS-<=> (если не оплачен -- None)
     | }
 
     :param ID: ID FPS-<=>
@@ -24,7 +24,7 @@ async def status(ID: str) -> dict[str, ...]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/fps/info/status",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/fps/status",
                 params={"ID": ID}
         ) as response:
             json = await response.json()
