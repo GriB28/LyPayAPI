@@ -15,7 +15,7 @@ async def get(chequeID: str) -> dict[str, ...]:
     | "storeID": str,
     | "customer": int,
     | "unix": float,
-    | "items": dict[itemID : multiplier],
+    | "items": dict[itemID (str) : multiplier (int)],
     | "active": bool
     | }
 
@@ -32,7 +32,7 @@ async def get(chequeID: str) -> dict[str, ...]:
             if response.status >= 400:
                 raise APIError.get(get, response.status, json)
 
-            json["items"] = j2.from_('{' + json["items"] + '}')
+            json["items"] = j2.from_(json["items"])
             return json
 
 
@@ -59,12 +59,12 @@ async def get_all(storeID: str, active_filter: bool = True) -> list[str]:
 
 async def create(storeID: str, customer: int, items: dict[str, int]) -> str:
     """
-    Функция создания нового чека по введённым параметрам
+    Функция создания нового чека по введённым параметрам (НЕ переводит тугрики автоматически)
 
     :param storeID: ID магазина
     :param customer: ID покупателя
     :param items: словарь с корзиной: {itemID : multiplier}
-    :return: ID новго чека
+    :return: ID нового чека
     """
 
     payload = dict()
@@ -86,7 +86,7 @@ async def create(storeID: str, customer: int, items: dict[str, int]) -> str:
 
 async def cancel(chequeID: str) -> None:
     """
-    Функция отмены чека
+    Функция отмены чека (ВОЗВРАЩАЕТ тугрики автоматически)
 
     :param chequeID: ID чека
     :return: ничего (может вызвать ошибку выполнения)
