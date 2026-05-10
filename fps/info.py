@@ -3,7 +3,7 @@ from ..__exceptions__ import APIError
 from ..scripts.sender import create_session
 
 
-async def check_status(ID: str) -> dict[str, ...]:
+async def status(ID: str) -> dict[str, ...]:
     """
     Запрос данных об FPS-<=> в следующем формате:
 
@@ -29,6 +29,6 @@ async def check_status(ID: str) -> dict[str, ...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(check_status, response.status, json)
+                raise APIError.get(status, response.status, json)
 
             return json
