@@ -1,8 +1,9 @@
 from ssl import create_default_context as ssl_create_default_context, CERT_NONE
 from os import getenv
+from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).parent / '.env')
 
 class CONFIGURATION:
     CACHEPATH = 'media'
