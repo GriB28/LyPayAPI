@@ -5,12 +5,12 @@ from ..scripts.sender import create_session
 
 async def new(*, description: str | None = None, amount: int, author: str | int) -> str:
     """
-    Создание нового FPS-<>
+    Создание нового FPS-линка
 
-    :param description: описание FPS-<> (опционально)
+    :param description: описание FPS-линка (опционально)
     :param amount: сумма перевода
     :param author: ID создателя перевода
-    :return: ID нового созданного FPS-<>
+    :return: ID созданного FPS-линка
     """
 
     payload = dict()
@@ -33,9 +33,10 @@ async def new(*, description: str | None = None, amount: int, author: str | int)
 
 async def cancel(ID: str) -> None:
     """
-    Отмена (деактивация) созданного FPS-<>
+    Отмена (деактивация) созданного FPS-линка.
+    Можно деактивировать только тот FPS-линк, что ещё не был оплачен.
 
-    :param ID: ID FPS-<>
+    :param ID: ID FPS-линка
     :return: ничего (может вызвать ошибку выполнения)
     """
 

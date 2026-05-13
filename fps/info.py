@@ -5,21 +5,21 @@ from ..scripts.sender import create_session
 
 async def status(ID: str) -> dict[str, ...]:
     """
-    Запрос данных об FPS-<=> в следующем формате:
+    Запрос данных об FPS-линке в следующем формате:
 
     | {
-    | "ID": str,                -- ID FPS-<=>
+    | "ID": str,                -- ID FPS-линка
     | "author": str | int       -- ID автора, int для пользователя, str для магазина
-    | "description": str,       -- описание FPS-<=>
+    | "description": str,       -- описание FPS-линка
     | "amount": int,            -- стоимость
     | "payed": int,             -- ID оплатившего пользователя (если не оплачен -- None)
     | "cheque": str,            -- ID привязанного чека (если не оплачен или автор -- не магазин, то None)
-    | "unix_creation": float,   -- UNIX-timestamp создания FPS-<=>
-    | "unix_payment": float     -- UNIX-timestamp оплаты FPS-<=> (если не оплачен -- None)
+    | "unix_creation": float,   -- UNIX-timestamp создания FPS-линка
+    | "unix_payment": float     -- UNIX-timestamp оплаты FPS-линка (если не оплачен -- None)
     | }
 
-    :param ID: ID FPS-<=>
-    :return: словарь с данными FPS-<=> из таблицы ``database.FPS``
+    :param ID: ID FPS-линка
+    :return: словарь с данными FPS-линка из таблицы ``database.FPS``
     """
 
     async with create_session() as session:

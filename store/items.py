@@ -12,7 +12,7 @@ async def get(ID: str) -> dict[str, ...]:
     | "storeID: str,
     | "name": str,
     | "price": int,
-    | "active: bool
+    | "active": bool
     | }
 
     :param ID: ID айтема

@@ -5,11 +5,11 @@ from ..scripts.sender import create_session
 
 async def pay(fpsID: str, userID: int) -> str | None:
     """
-    Оплата FPS-<=>
+    Оплата FPS-линка
 
-    :param fpsID: ID FPS-<=>
+    :param fpsID: ID FPS-линка
     :param userID: ID плательщика
-    :return: ID созданного чека, если автором FPS-<> является магазин, иначе -- None
+    :return: ID созданного чека, если автором FPS-линка является магазин, иначе -- None
     """
 
     async with create_session() as session:
