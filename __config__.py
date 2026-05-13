@@ -1,8 +1,9 @@
 from ssl import create_default_context as ssl_create_default_context, CERT_NONE
 from os import getenv
+from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(Path(__file__).parent / '.env')
 
 class CONFIGURATION:
     CACHEPATH = 'media'
@@ -20,6 +21,6 @@ class CONFIGURATION:
     SSL.verify_mode = CERT_NONE
 
 
-VERSION = "v2.5a"
-NAME = "FullStack"
-BUILD = 20
+VERSION = "v2.6a"
+NAME = "Public API"
+BUILD = 21

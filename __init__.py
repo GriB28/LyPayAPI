@@ -1,7 +1,7 @@
 from os import mkdir
 from os.path import exists, join
 
-from .__config__ import CONFIGURATION, VERSION, NAME, BUILD
+from .__config__ import CONFIGURATION
 from . import __exceptions__ as exceptions
 
 from . import user
@@ -9,6 +9,7 @@ from . import store
 from . import admin
 from . import auction
 from . import utils
+from . import fps
 
 # from . import mst
 
@@ -21,7 +22,3 @@ for path in (
 ):
     if not exists(path):
         mkdir(path)
-
-
-def __help__():
-    print(f"LyPayAPI {VERSION}{':' + NAME if len(NAME) > 0 else ''} (build {BUILD})")

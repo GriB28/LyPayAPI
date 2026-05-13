@@ -12,7 +12,7 @@ async def get(ID: str) -> dict[str, ...]:
     | "storeID: str,
     | "name": str,
     | "price": int,
-    | "active: bool
+    | "active": bool
     | }
 
     :param ID: ID айтема
@@ -108,7 +108,7 @@ async def edit(itemID: str, name: str | None = None, price: int | None = None) -
     if price is not None:
         payload["price"] = price
     if len(payload) == 0:
-        raise ValueError("В вызове функции promo.edit должен присутствовать хотя бы один аргумент кроме ID.")
+        raise ValueError("В вызове функции items.edit должен присутствовать хотя бы один аргумент кроме ID.")
     payload["itemID"] = itemID
 
     async with create_session() as session:
