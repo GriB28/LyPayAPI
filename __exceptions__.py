@@ -71,13 +71,16 @@ class APIError(Exception):
 
         elif json['message'] == 'bad censor flag: store name':
             return InvalidStoreName(method, response, json)
-        elif json['message'] == 'bad censor flag: desc':
+        elif json['message'] == 'bad censor flag: store desc':
             return InvalidStoreDescription(method, response, json)
 
         elif json['message'] == 'bad censor flag: store item name':
             return InvalidStoreItemName(method, response, json)
         elif json['message'] == 'bad censor flag: store item price':
             return InvalidStoreItemPrice(method, response, json)
+
+        elif json['message'] == 'bad censor flag: FPS desc':
+            return InvalidFPSDescrition(method, response, json)
 
         elif json['message'] == 'link email not found':
             return RegistrationEmailNotFound(method, response, json)
@@ -170,6 +173,11 @@ class InvalidStoreDescription(APIError):
 class InvalidStoreItemName(APIError):
     def __str__(self):
         return super().form_str_message("название айтема не прошло проверку")
+
+
+class InvalidFPSDescrition(APIError):
+    def __str__(self):
+        return super().form_str_message("описание FPS-линка не прошло проверку")
 
 
 class InvalidStoreItemPrice(APIError):
