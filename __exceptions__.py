@@ -90,7 +90,7 @@ class APIError(Exception):
             return BadFireWallCheck(method, response, json)
 
         elif json['message'] == 'user is already a shopkeeper':
-            return UserIsAlreadyShopkeeper(method, response, json)
+            return UserIsAlreadyAShopkeeper(method, response, json)
 
         return cls(method, response, json)
 
@@ -190,6 +190,6 @@ class BadFireWallCheck(APIError):
         return super().form_str_message("запрос не прошёл проверку файерволла")
 
 
-class UserIsAlreadyShopkeeper(APIError):
+class UserIsAlreadyAShopkeeper(APIError):
     def __str__(self):
         return super().form_str_message("пользователь уже имеет доступ к какому-то магазину")
