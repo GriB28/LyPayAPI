@@ -53,6 +53,8 @@ class APIError(Exception):
 
         elif json['message'] == 'login not found':
             return LoginNotFound(method, response, json)
+        elif json['message'] == 'login already exists':
+            return LoginAlreadyExists(method, response, json)
 
         elif json['message'] == 'not enough balance':
             return NotEnoughBalance(method, response, json)
@@ -113,6 +115,11 @@ class LoginNotFound(APIError):
 class IDAlreadyExists(APIError):
     def __str__(self):
         return super().form_str_message("ID уже существует")
+
+
+class LoginAlreadyExists(APIError):
+    def __str__(self):
+        return super().form_str_message("пользователь с таким логином уже существует")
 
 
 class BadRequest(APIError):
