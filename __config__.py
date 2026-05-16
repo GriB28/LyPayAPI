@@ -23,4 +23,4 @@ class CONFIGURATION:
 
 VERSION = "v2.6a"
 NAME = "Public API"
-BUILD = 21
+BUILD = 22
