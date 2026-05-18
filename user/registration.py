@@ -59,19 +59,20 @@ async def send_email(route: str, participant: str, code: str | None = None, keys
                 raise APIError.get(send_email, response.status, await response.json())
 
 
-async def check_code(email: str, code: str) -> bool:
+async def check_code(email: str, code: str, route: str = 'main') -> bool:
     """
     Проверяет код регистрации пользователя
 
     :param email: почта для проверки
     :param code: код для проверки
+    :param route: 'main' или 'guest' -- вариант регистрации
     :return: статус проверки (True/False)
     """
 
     async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/code",
-                params={"code": code}
+                params={"code": code, "route": route}
         ) as response:
             json = await response.json()
             if response.status >= 400:
