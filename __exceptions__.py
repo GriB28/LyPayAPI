@@ -97,6 +97,9 @@ class APIError(Exception):
         elif json['message'] == 'user is already a shopkeeper':
             return UserIsAlreadyAShopkeeper(method, response, json)
 
+        elif json['message'] == 'launcher flag blocked':
+            return LauncherFlagBlocked(method, response, json)
+
         return cls(method, response, json)
 
 
@@ -208,3 +211,8 @@ class BadFireWallCheck(APIError):
 class UserIsAlreadyAShopkeeper(APIError):
     def __str__(self):
         return super().form_str_message("пользователь уже имеет доступ к какому-то магазину")
+
+
+class LauncherFlagBlocked(APIError):
+    def __str__(self):
+        return super().form_str_message("действие заблокировано флагом ядра")
