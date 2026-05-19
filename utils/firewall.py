@@ -14,15 +14,15 @@ async def check(ID: int, route: str) -> bool:
 
     route = route.strip().lower()
     try:
-        user = await entry(ID, route)
-        return user['access']
+        user_accesses = tuple(map(lambda r: r["access"], await entries(ID, route)))
+        return all(user_accesses)
     except IDNotFound:
         if route == 'main':
             return True
         return False
 
 
-async def entry(ID: int, route: str) -> dict[str, ...]:
+async def entries(ID: int, route: str) -> list[dict[str, ...]]:
     """
     Запрос профиля пользователя в файерволле в формате:
 
@@ -35,7 +35,7 @@ async def entry(ID: int, route: str) -> dict[str, ...]:
 
     :param ID: ID пользователя
     :param route: 'main', 'stores', 'admins' или 'high'
-    :return: словарь с данными пользователя из таблицы ``firewall.STORES``
+    :return: список словарей с данными пользователя из таблицы ``firewall.STORES``
     """
 
     route = route.strip().lower()
@@ -46,6 +46,6 @@ async def entry(ID: int, route: str) -> dict[str, ...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(entry, response.status, json)
+                raise APIError.get(entries, response.status, json)
 
             return json['result']
