@@ -5,13 +5,12 @@ from ..scripts.sender import create_session
 from jwt import encode as jwt_encode
 
 
-async def check_link(email: str, link: str) -> bool:
+async def check_link(link: str) -> str:
     """
     Проверяет код регистрации магазина
 
-    :param email: почта для проверки
     :param link: код для проверки
-    :return: статус проверки (True/False)
+    :return: эл. почту, на которую создан линк
     """
 
     async with create_session() as session:
@@ -23,7 +22,7 @@ async def check_link(email: str, link: str) -> bool:
             if response.status >= 400:
                 raise APIError.get(check_link, response.status, json)
 
-            return json["email"] == email
+            return json["email"]
 
 
 async def get_ID() -> str:

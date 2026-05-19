@@ -8,7 +8,7 @@ load_dotenv(Path(__file__).parent / '.env')
 class CONFIGURATION:
     CACHEPATH = 'media'
 
-    CHUNK_SIZE = 512
+    CHUNK_SIZE = 8192
 
     JWT_KEY = "crimsonmoonshinesuponatownthatissmearedinblood-criedthedivagivenintolament"
 
