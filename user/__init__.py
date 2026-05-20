@@ -1,4 +1,4 @@
 from . import registration
-from . import balance
+from . import transactions
 from . import info
 from . import settings

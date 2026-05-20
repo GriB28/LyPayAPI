@@ -3,26 +3,6 @@ from ..__config__ import CONFIGURATION
 from ..scripts.sender import create_session
 
 
-async def view(ID: int) -> int:
-    """
-    Запрос баланса пользователя
-
-    :param ID: ID пользователя
-    :return: число
-    """
-
-    async with create_session() as session:
-        async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/balance",
-                params={"ID": ID}
-        ) as response:
-            json = await response.json()
-            if response.status >= 400:
-                raise APIError.get(view, response.status, json)
-
-            return json["balance"]
-
-
 async def transfer(ID_out: int, ID_in: int | str, amount: int) -> None:
     """
     Функция перевода от покупателя покупателю (или магазину). Не изменяет количество валюты в системе.
@@ -56,3 +36,36 @@ async def transfer(ID_out: int, ID_in: int | str, amount: int) -> None:
         ) as response:
             if response.status >= 400:
                 raise APIError.get(transfer, response.status, await response.json())
+
+
+async def history(ID_out: int | None = None, ID_in: int | None = None) -> list:
+    """
+    Функция запроса списка всех переводов пользователь-пользователь.
+    Если указан ID_out, то поиск вернёт список списков вида [ID_in (int), amount (int)].
+    Если указан ID_in, то будет возвращено, соответственно, [ID_out (int), amount (int)].
+
+    Ровно один из аргументов должен быть указан.
+
+    :param ID_out: ID пользователя (если нужен поиск отправленных переводов)
+    :param ID_in: ID пользователя (если нужен поиск полученных переводов)
+    :return: список списков в указанном формате
+    """
+
+    payload = dict()
+    if ID_out is not None:
+        payload['ID_out'] = ID_out
+    elif ID_in is not None:
+        payload['ID_in'] = ID_in
+    else:
+        raise AttributeError
+
+    async with create_session() as session:
+        async with session.get(
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/transfer/list",
+                params={"ID_out": ID_out} if ID_out is not None else {"ID_in": ID_in}
+        ) as response:
+            json = await response.json()
+            if response.status >= 400:
+                raise APIError.get(history, response.status, json)
+
+            return json['result']
