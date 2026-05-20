@@ -38,7 +38,7 @@ async def transfer(ID_out: int, ID_in: int | str, amount: int) -> None:
                 raise APIError.get(transfer, response.status, await response.json())
 
 
-async def history(ID_out: int | None = None, ID_in: int | None = None) -> list:
+async def transfer_history(ID_out: int | None = None, ID_in: int | None = None) -> list:
     """
     Функция запроса списка всех переводов пользователь-пользователь.
     Если указан ID_out, то поиск вернёт список списков вида [ID_in (int), amount (int), unix (float)].
@@ -61,11 +61,32 @@ async def history(ID_out: int | None = None, ID_in: int | None = None) -> list:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/transfer/list",
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/transfer_list",
                 params={"ID_out": ID_out} if ID_out is not None else {"ID_in": ID_in}
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(history, response.status, json)
+                raise APIError.get(transfer_history, response.status, json)
+
+            return json['result']
+
+
+async def deposit_history(ID: int) -> list:
+    """
+    Функция запроса списка всех пополнений в обменных пунктах
+    Вернёт список списков вида [amount (int), unix (float)].
+
+    :param ID: ID пользователя
+    :return: список списков в указанном формате (отсортированный по unix)
+    """
+
+    async with create_session() as session:
+        async with session.get(
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/deposit_list",
+                params={"ID": ID}
+        ) as response:
+            json = await response.json()
+            if response.status >= 400:
+                raise APIError.get(deposit_history, response.status, json)
 
             return json['result']
