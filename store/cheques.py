@@ -59,7 +59,7 @@ async def get_all(storeID: str, active_filter: bool = True) -> list[str]:
 
 async def create(storeID: str, customer: int, items: dict[str, int]) -> str:
     """
-    Функция создания нового чека по введённым параметрам (НЕ переводит тугрики автоматически)
+    Функция создания нового чека по введённым параметрам (ПЕРЕВОДИТ тугрики автоматически)
 
     :param storeID: ID магазина
     :param customer: ID покупателя
