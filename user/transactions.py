@@ -41,14 +41,14 @@ async def transfer(ID_out: int, ID_in: int | str, amount: int) -> None:
 async def history(ID_out: int | None = None, ID_in: int | None = None) -> list:
     """
     Функция запроса списка всех переводов пользователь-пользователь.
-    Если указан ID_out, то поиск вернёт список списков вида [ID_in (int), amount (int)].
-    Если указан ID_in, то будет возвращено, соответственно, [ID_out (int), amount (int)].
+    Если указан ID_out, то поиск вернёт список списков вида [ID_in (int), amount (int), unix (float)].
+    Если указан ID_in, то будет возвращено, соответственно, [ID_out (int), amount (int), unix (float)].
 
     Ровно один из аргументов должен быть указан.
 
     :param ID_out: ID пользователя (если нужен поиск отправленных переводов)
     :param ID_in: ID пользователя (если нужен поиск полученных переводов)
-    :return: список списков в указанном формате
+    :return: список списков в указанном формате (отсортированный по unix)
     """
 
     payload = dict()
