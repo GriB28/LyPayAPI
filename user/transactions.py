@@ -73,7 +73,7 @@ async def transfer_history(ID_out: int | None = None, ID_in: int | None = None) 
 
 async def deposit_history(ID: int) -> list:
     """
-    Функция запроса списка всех пополнений в обменных пунктах
+    Функция запроса списка всех пополнений в обменных пунктах.
     Вернёт список списков вида [amount (int), unix (float)].
 
     :param ID: ID пользователя
@@ -88,5 +88,26 @@ async def deposit_history(ID: int) -> list:
             json = await response.json()
             if response.status >= 400:
                 raise APIError.get(deposit_history, response.status, json)
+
+            return json['result']
+
+
+async def cheque_history(ID: int) -> list:
+    """
+    Функция запроса списка всех чеков.
+    Вернёт список списков вида [storeID (str), items (json-str), unix (float)].
+
+    :param ID: ID пользователя
+    :return: список списков в указанном формате (отсортированный по unix)
+    """
+
+    async with create_session() as session:
+        async with session.get(
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/cheque_list",
+                params={"ID": ID}
+        ) as response:
+            json = await response.json()
+            if response.status >= 400:
+                raise APIError.get(cheque_history, response.status, json)
 
             return json['result']
