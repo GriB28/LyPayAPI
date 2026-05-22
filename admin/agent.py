@@ -23,7 +23,7 @@ async def is_agent(userID: int) -> bool:
             return json["result"]
 
 
-async def deposit(userID: int, value: int, agent_id: int | None = None) -> None:
+async def deposit(userID: int, amount: int, agentID: int | None = None) -> None:
     """
     Функция пополнения баланса. Создаёт новую валюту в системе.
 
@@ -31,16 +31,16 @@ async def deposit(userID: int, value: int, agent_id: int | None = None) -> None:
     переводами во избежание излишних проверок; для переводов есть `user.transfer()`
 
     :param userID: ID пользователя
-    :param value: сумма для зачисления
-    :param agent_id: ID агента (необязательный аргумент, но необходимо указывать везде, где это возможно)
+    :param amount: сумма для зачисления
+    :param agentID: ID агента (необязательный аргумент, но необходимо указывать везде, где это возможно)
     :return: ничего (может вызвать ошибку выполнения)
     """
 
     payload = dict()
-    if agent_id is not None:
-        payload['agent_id'] = agent_id
+    if agentID is not None:
+        payload['agentID'] = agentID
     payload['userID'] = userID
-    payload['value'] = value
+    payload['amount'] = amount
 
     async with create_session() as session:
         async with session.get(
