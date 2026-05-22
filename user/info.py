@@ -143,7 +143,7 @@ async def qr(ID: int) -> str:
     :return: относительный путь (от корня проекта) до файла кэша (независимо от того, было обновление или нет)
     """
 
-    path = join(CONFIGURATION.CACHEPATH, "users_qr", f"{ID}.svg")
+    path = join(CONFIGURATION.CACHEPATH, "users_qr", f"{ID}.png")
     if exists(path):
         async with create_session() as session:
             async with session.get(
