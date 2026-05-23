@@ -49,3 +49,28 @@ async def deposit(userID: int, amount: int, agentID: int | None = None) -> None:
         ) as response:
             if response.status >= 400:
                 raise APIError.get(deposit, response.status, await response.json())
+
+
+async def deposit_store(auctionID: int, amount: int, agentID: int | None = None) -> None:
+    """
+    Функция пополнения баланса для пересчёта перед аукционом
+
+    :param auctionID: ID аукциона
+    :param amount: сумма для зачисления
+    :param agentID: ID агента (необязательный аргумент, но необходимо указывать везде, где это возможно)
+    :return: ничего (может вызвать ошибку выполнения)
+    """
+
+    payload = dict()
+    if agentID is not None:
+        payload['agentID'] = agentID
+    payload['auctionID'] = auctionID
+    payload['amount'] = amount
+
+    async with create_session() as session:
+        async with session.get(
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/agent/deposit_auc",
+                params=payload
+        ) as response:
+            if response.status >= 400:
+                raise APIError.get(deposit_store, response.status, await response.json())
