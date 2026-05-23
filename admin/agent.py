@@ -23,7 +23,7 @@ async def is_agent(userID: int) -> bool:
             return json["result"]
 
 
-async def deposit(userID: int, amount: int, agentID: int | None = None) -> None:
+async def deposit(userID: int, amount: int, agentID: int) -> None:
     """
     Функция пополнения баланса. Создаёт новую валюту в системе.
 
@@ -36,22 +36,16 @@ async def deposit(userID: int, amount: int, agentID: int | None = None) -> None:
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    payload = dict()
-    if agentID is not None:
-        payload['agentID'] = agentID
-    payload['userID'] = userID
-    payload['amount'] = amount
-
     async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/agent/deposit",
-                params=payload
+                params={"userID": userID, "amount": amount, "agentID": agentID}
         ) as response:
             if response.status >= 400:
                 raise APIError.get(deposit, response.status, await response.json())
 
 
-async def deposit_store(auctionID: int, amount: int, agentID: int | None = None) -> None:
+async def deposit_store(auctionID: int, amount: int, agentID: int) -> None:
     """
     Функция пополнения баланса для пересчёта перед аукционом
 
@@ -61,16 +55,10 @@ async def deposit_store(auctionID: int, amount: int, agentID: int | None = None)
     :return: ничего (может вызвать ошибку выполнения)
     """
 
-    payload = dict()
-    if agentID is not None:
-        payload['agentID'] = agentID
-    payload['auctionID'] = auctionID
-    payload['amount'] = amount
-
     async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/agent/deposit_auc",
-                params=payload
+                params={"auctionID": auctionID, "amount": amount, "agentID": agentID}
         ) as response:
             if response.status >= 400:
                 raise APIError.get(deposit_store, response.status, await response.json())
