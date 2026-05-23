@@ -45,3 +45,25 @@ async def confirm(lotID: int) -> None:
         ) as response:
             if response.status >= 400:
                 raise APIError.get(add, response.status, await response.json())
+
+
+async def all_lots(storeID: str) -> list:
+    """
+    Функция, возвращающая список лотов (словарей) определённого магазина в формате:
+
+
+
+    :param storeID: ID магазина
+    :return: список словарей в указанном формате
+    """
+
+    async with create_session() as session:
+        async with session.get(
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/auc/lot/list",
+                params={"storeID": storeID}
+        ) as response:
+            json = await response.json()
+            if response.status >= 400:
+                raise APIError.get(all_lots, response.status, json)
+
+            return json['result']
