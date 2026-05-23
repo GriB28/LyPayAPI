@@ -18,6 +18,7 @@ async def new(*, description: str | None = None, amount: int, author: str | int)
         payload['description'] = description
     payload['amount'] = amount
     payload['author'] = author
+    payload['author_type'] = 's' if type(author) is str else 'u'
 
     async with create_session() as session:
         async with session.get(

@@ -100,6 +100,9 @@ class APIError(Exception):
         elif json['message'] == 'launcher flag blocked':
             return LauncherFlagBlocked(method, response, json)
 
+        elif json['message'] == 'ticket has already been purchased':
+            return LotteryTicketCantBePurchased(method, response, json)
+
         return cls(method, response, json)
 
 
@@ -216,3 +219,8 @@ class UserIsAlreadyAShopkeeper(APIError):
 class LauncherFlagBlocked(APIError):
     def __str__(self):
         return super().form_str_message("действие заблокировано флагом ядра")
+
+
+class LotteryTicketCantBePurchased(APIError):
+    def __str__(self):
+        return super().form_str_message("билет лотереи уже был куплен")

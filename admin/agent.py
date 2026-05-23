@@ -23,7 +23,7 @@ async def is_agent(userID: int) -> bool:
             return json["result"]
 
 
-async def deposit(userID: int, value: int, agent_id: int | None = None) -> None:
+async def deposit(userID: int, amount: int, agentID: int) -> None:
     """
     Функция пополнения баланса. Создаёт новую валюту в системе.
 
@@ -31,21 +31,34 @@ async def deposit(userID: int, value: int, agent_id: int | None = None) -> None:
     переводами во избежание излишних проверок; для переводов есть `user.transfer()`
 
     :param userID: ID пользователя
-    :param value: сумма для зачисления
-    :param agent_id: ID агента (необязательный аргумент, но необходимо указывать везде, где это возможно)
+    :param amount: сумма для зачисления
+    :param agentID: ID агента (необязательный аргумент, но необходимо указывать везде, где это возможно)
     :return: ничего (может вызвать ошибку выполнения)
     """
-
-    payload = dict()
-    if agent_id is not None:
-        payload['agent_id'] = agent_id
-    payload['userID'] = userID
-    payload['value'] = value
 
     async with create_session() as session:
         async with session.get(
                 f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/agent/deposit",
-                params=payload
+                params={"userID": userID, "amount": amount, "agentID": agentID}
         ) as response:
             if response.status >= 400:
                 raise APIError.get(deposit, response.status, await response.json())
+
+
+async def deposit_store(auctionID: int, amount: int, agentID: int) -> None:
+    """
+    Функция пополнения баланса для пересчёта перед аукционом
+
+    :param auctionID: ID аукциона
+    :param amount: сумма для зачисления
+    :param agentID: ID агента (необязательный аргумент, но необходимо указывать везде, где это возможно)
+    :return: ничего (может вызвать ошибку выполнения)
+    """
+
+    async with create_session() as session:
+        async with session.get(
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/agent/deposit_auc",
+                params={"auctionID": auctionID, "amount": amount, "agentID": agentID}
+        ) as response:
+            if response.status >= 400:
+                raise APIError.get(deposit_store, response.status, await response.json())

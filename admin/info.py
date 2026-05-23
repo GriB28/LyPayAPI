@@ -79,3 +79,23 @@ async def db_query(db_type: str, query: str) -> list[...]:
                 raise APIError.get(db_query, response.status, json)
 
             return json["result"]
+
+
+async def is_high(userID: int) -> bool:
+    """
+    Проверяет, является ли пользователь админом HIGH LVL
+
+    :param userID: ID пользователя
+    :return: True, если является; False, если нет
+    """
+
+    async with create_session() as session:
+        async with session.get(
+                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/check_high",
+                params={"userID": userID}
+        ) as response:
+            json = await response.json()
+            if response.status >= 400:
+                raise APIError.get(is_high, response.status, json)
+
+            return json["result"]
