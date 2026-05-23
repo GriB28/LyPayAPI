@@ -47,11 +47,17 @@ async def confirm(lotID: int) -> None:
                 raise APIError.get(add, response.status, await response.json())
 
 
-async def all_lots(storeID: str) -> list:
+async def all_lots(storeID: str) -> list[dict[str, ...]]:
     """
     Функция, возвращающая список лотов (словарей) определённого магазина в формате:
 
-
+    | {
+    | "lotID": int,
+    | "name: str,
+    | "price": int,
+    | "auctionID": int,
+    | "confirmed": bool
+    | }
 
     :param storeID: ID магазина
     :return: список словарей в указанном формате
