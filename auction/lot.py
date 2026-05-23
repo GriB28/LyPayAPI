@@ -44,7 +44,7 @@ async def confirm(lotID: int) -> None:
                 params={"lotID": lotID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(add, response.status, await response.json())
+                raise APIError.get(confirm, response.status, await response.json())
 
 
 async def all_lots(storeID: str) -> list[dict[str, ...]]:
