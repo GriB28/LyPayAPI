@@ -1,5 +1,5 @@
-from ..__exceptions__ import APIError
-from ..__config__ import CONFIGURATION
+from ..exceptions import APIError
+from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -25,7 +25,7 @@ async def add(name: str, price: int, auctionID: int, lotID: int | None = None) -
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(add, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json['indexed']
 
@@ -44,7 +44,7 @@ async def confirm(lotID: int) -> None:
                 params={"lotID": lotID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(confirm, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())
 
 
 async def all_lots(storeID: str) -> list[dict[str, ...]]:
@@ -70,6 +70,6 @@ async def all_lots(storeID: str) -> list[dict[str, ...]]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(all_lots, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json['result']

@@ -1,5 +1,5 @@
-from ..__exceptions__ import APIError
-from ..__config__ import CONFIGURATION
+from ..exceptions import APIError
+from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -17,4 +17,4 @@ async def lottery(ID: str) -> None:
                 params={"ID": ID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(lottery, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())

@@ -14,3 +14,6 @@ async def save_iterative(response: ClientResponse, path: str, chunk: int):
     async with a_open(path, mode='wb') as f:
         async for chunk in response.content.iter_chunked(chunk):
             await f.write(chunk)
+
+
+__all__ = ("save_iterative",)

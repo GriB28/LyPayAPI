@@ -1,5 +1,5 @@
-from ..__config__ import CONFIGURATION
-from ..__exceptions__ import APIError, IDNotFound
+from ..config import CONFIGURATION
+from ..exceptions import APIError, IDNotFound
 from ..scripts.sender import create_session
 
 
@@ -46,6 +46,6 @@ async def entries(ID: int, route: str) -> list[dict[str, ...]]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(entries, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json['result']

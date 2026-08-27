@@ -1,5 +1,5 @@
 from aiohttp import ClientSession, TCPConnector
-from ..__config__ import CONFIGURATION
+from ..config import CONFIGURATION
 
 
 class CustomSession(ClientSession):
@@ -49,3 +49,9 @@ def create_session():
         connector=TCPConnector(ssl=CONFIGURATION.SSL),
         extra={"token": CONFIGURATION.TOKEN} if CONFIGURATION.TOKEN is not None else None,
     )
+
+
+__all__ = (
+    "CustomSession",
+    "create_session"
+)

@@ -1,5 +1,5 @@
-from ...__exceptions__ import APIError
-from ...__config__ import CONFIGURATION
+from ...exceptions import APIError
+from ...config import CONFIGURATION
 from ...scripts.sender import create_session
 
 
@@ -18,7 +18,7 @@ async def get(ID: str) -> str:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json['result']
 
@@ -38,4 +38,4 @@ async def update(ID: str, new: str):
                 params={"ID": ID, "new": new}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(update, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())

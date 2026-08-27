@@ -32,3 +32,6 @@ def rollback(line: str) -> str:
     for key, value in reversed(keymap.items()):
         line = line.replace(value, key)
     return line
+
+
+__all__ = ("clear", "rollback")

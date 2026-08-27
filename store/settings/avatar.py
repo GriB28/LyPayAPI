@@ -4,8 +4,8 @@ from os.path import getmtime, exists, join
 from os import remove
 from aiofiles import open as a_open
 
-from ...__exceptions__ import APIError
-from ...__config__ import CONFIGURATION
+from ...exceptions import APIError
+from ...config import CONFIGURATION
 from ...scripts.sender import create_session
 from ...scripts.mem import save_iterative
 
@@ -36,7 +36,7 @@ async def get(ID: str) -> tuple[str, bool] | None:
                 json = {"message": "unknown", "error": "unknown", "result": "got image content"}
 
             if response.status >= 400:
-                raise APIError.get(get, response.status, json)
+                raise APIError.get(response.status, json)
 
             if json['result'] == "no icon":
                 if exists(path):
@@ -75,7 +75,7 @@ async def update(ID: str, media_path: str):
                 data=form
         ) as response:
             if response.status >= 400:
-                raise APIError.get(update, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())
 
 
 async def delete(ID: str):
@@ -92,4 +92,4 @@ async def delete(ID: str):
                 params={"ID": ID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(delete, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())

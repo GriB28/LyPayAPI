@@ -1,7 +1,7 @@
 from jwt import encode as jwt_encode
 
-from ..__exceptions__ import APIError
-from ..__config__ import CONFIGURATION
+from ..exceptions import APIError
+from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -26,7 +26,7 @@ async def check_email_record(email: str) -> dict[str, ...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(check_email_record, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json
 
@@ -56,7 +56,7 @@ async def send_email(route: str, participant: str, code: str | None = None, keys
                 params=payload
         ) as response:
             if response.status >= 400:
-                raise APIError.get(send_email, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())
 
 
 async def check_code(email: str, code: str, route: str = 'main') -> bool:
@@ -76,7 +76,7 @@ async def check_code(email: str, code: str, route: str = 'main') -> bool:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(check_code, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json["email"] == email
 
@@ -112,6 +112,6 @@ async def new(*, name: str, login: str | None, password: str | None, group: str,
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(new, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json['ID']

@@ -1,5 +1,5 @@
-from ..__exceptions__ import APIError
-from ..__config__ import CONFIGURATION
+from ..exceptions import APIError
+from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 from jwt import encode as jwt_encode
@@ -20,7 +20,7 @@ async def check_link(link: str) -> str:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(check_link, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json["email"]
 
@@ -36,7 +36,7 @@ async def get_ID() -> str:
         async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/store_id") as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_ID, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json["ID"]
 
@@ -65,7 +65,7 @@ async def send_email(participant: str, code: str | None = None, keys: dict[str, 
                 params=payload
         ) as response:
             if response.status >= 400:
-                raise APIError.get(send_email, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())
 
 
 async def new(*, storeID: str, name: str, hostID: int, link: str) -> None:
@@ -90,4 +90,4 @@ async def new(*, storeID: str, name: str, hostID: int, link: str) -> None:
                 }
         ) as response:
             if response.status >= 400:
-                raise APIError.get(new, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())

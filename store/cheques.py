@@ -1,7 +1,7 @@
 from jwt import encode as jwt_encode
 
-from ..__config__ import CONFIGURATION
-from ..__exceptions__ import APIError
+from ..config import CONFIGURATION
+from ..exceptions import APIError
 from ..scripts.sender import create_session
 from ..scripts import j2
 
@@ -30,7 +30,7 @@ async def get(chequeID: str) -> dict[str, ...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get, response.status, json)
+                raise APIError.get(response.status, json)
 
             json["items"] = j2.from_(json["items"])
             return json
@@ -52,7 +52,7 @@ async def get_all(storeID: str, active_filter: bool = True) -> list[str]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_all, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json["result"]
 
@@ -79,7 +79,7 @@ async def create(storeID: str, customer: int, items: dict[str, int]) -> str:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_all, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json["generated"]
 
@@ -98,4 +98,4 @@ async def cancel(chequeID: str) -> None:
                 params={"chequeID": chequeID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(cancel, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())

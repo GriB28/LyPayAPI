@@ -1,5 +1,5 @@
-from ..__exceptions__ import APIError
-from ..__config__ import CONFIGURATION
+from ..exceptions import APIError
+from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -19,4 +19,4 @@ async def transfer(ID_out: str, ID_in: str, amount: int) -> None:
                 params={"ID_out": ID_out, "ID_in": ID_in, "amount": amount}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(transfer, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())

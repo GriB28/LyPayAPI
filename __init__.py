@@ -1,8 +1,8 @@
 from os import mkdir
 from os.path import exists, join
 
-from .__config__ import CONFIGURATION
-from . import __exceptions__ as exceptions
+from .config import CONFIGURATION
+from . import exceptions
 
 from . import user
 from . import store
@@ -22,3 +22,15 @@ for path in (
 ):
     if not exists(path):
         mkdir(path)
+
+
+__all__ = (
+    "CONFIGURATION",
+    "exceptions",
+    "user",
+    "store",
+    "admin",
+    "auction",
+    "utils",
+    "fps"
+)

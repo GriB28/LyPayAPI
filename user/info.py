@@ -1,8 +1,8 @@
 from os.path import getmtime, exists, join
 from os import remove
 
-from ..__exceptions__ import APIError
-from ..__config__ import CONFIGURATION
+from ..exceptions import APIError
+from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 from ..scripts.mem import save_iterative
 
@@ -34,7 +34,7 @@ async def get(ID: int) -> dict[str, ...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json
 
@@ -66,7 +66,7 @@ async def get_by_email(email: str) -> dict[str, ...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_by_email, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json
 
@@ -98,7 +98,7 @@ async def get_by_login(login: str) -> dict[str, ...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_by_login, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json
 
@@ -114,7 +114,7 @@ async def get_all() -> list[int]:
         async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/all") as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_all, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json['ids']
 
@@ -130,7 +130,7 @@ async def _request_qr(ID: int, path: str) -> None:
                 params={"ID": ID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(_request_qr, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())
 
             await save_iterative(response, path, CONFIGURATION.CHUNK_SIZE)
 
@@ -152,7 +152,7 @@ async def qr(ID: int) -> str:
             ) as response:
                 json = await response.json()
                 if response.status >= 400:
-                    raise APIError.get(qr, response.status, json)
+                    raise APIError.get(response.status, json)
 
                 if not json["actual"]:
                     remove(path)

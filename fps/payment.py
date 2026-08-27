@@ -1,5 +1,5 @@
-from ..__config__ import CONFIGURATION
-from ..__exceptions__ import APIError
+from ..config import CONFIGURATION
+from ..exceptions import APIError
 from ..scripts.sender import create_session
 
 
@@ -19,6 +19,6 @@ async def pay(fpsID: str, userID: int) -> str | None:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(pay, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json["chequeID"]

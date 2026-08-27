@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv(Path(__file__).parent / '.env')
 
+
 class CONFIGURATION:
     CACHEPATH = 'media'
 
@@ -24,3 +25,11 @@ class CONFIGURATION:
 VERSION = "v3.1a"
 NAME = "Release 3: global fixes"
 BUILD = 24
+
+
+__all__ = (
+    "CONFIGURATION",
+    "VERSION",
+    "NAME",
+    "BUILD"
+)

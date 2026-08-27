@@ -3,8 +3,8 @@ from aiohttp import ClientSession, TCPConnector
 from os import urandom
 from hashlib import sha256
 
-from ..__config__ import CONFIGURATION
-from ..__exceptions__ import APIError
+from ..config import CONFIGURATION
+from ..exceptions import APIError
 
 local_counter = dict()
 
@@ -25,7 +25,7 @@ async def main(ID: int):
                 params={"ID": ID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(main, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())
             local_counter[ID] += 1
 
 
@@ -45,6 +45,6 @@ async def end(ID: int) -> tuple[int, int]:
             json = await response.json()
 
             if response.status >= 400:
-                raise APIError.get(end, response.status, json)
+                raise APIError.get(response.status, json)
 
             return local_counter[ID] if ID in local_counter.keys() else 0, json["value"]

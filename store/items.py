@@ -1,5 +1,5 @@
-from ..__exceptions__ import APIError
-from ..__config__ import CONFIGURATION
+from ..exceptions import APIError
+from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -26,7 +26,7 @@ async def get(ID: str) -> dict[str, ...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json
 
@@ -47,7 +47,7 @@ async def get_all(storeID: str, active_filter: bool = True) -> list[str]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_all, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json["result"]
 
@@ -69,7 +69,7 @@ async def add(storeID: str, name: str, price: int) -> str:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(add, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json["generated"]
 
@@ -88,7 +88,7 @@ async def remove(itemID: str) -> None:
                 params={"itemID": itemID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(remove, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())
 
 
 async def edit(itemID: str, name: str | None = None, price: int | None = None) -> str:
@@ -118,6 +118,6 @@ async def edit(itemID: str, name: str | None = None, price: int | None = None) -
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(edit, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json["updated"]

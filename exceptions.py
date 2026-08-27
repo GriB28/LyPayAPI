@@ -189,14 +189,14 @@ class InvalidStoreItemName(APIError):
         return super().form_str_message("название айтема не прошло проверку")
 
 
-class InvalidFPSDescrition(APIError):
-    def __str__(self):
-        return super().form_str_message("описание FPS-линка не прошло проверку")
-
-
 class InvalidStoreItemPrice(APIError):
     def __str__(self):
         return super().form_str_message("цена айтема некорректна")
+
+
+class InvalidFPSDescrition(APIError):
+    def __str__(self):
+        return super().form_str_message("описание FPS-линка не прошло проверку")
 
 
 class RegistrationEmailNotFound(APIError):
@@ -232,3 +232,32 @@ class LauncherFlagBlocked(APIError):
 class LotteryTicketCantBePurchased(APIError):
     def __str__(self):
         return super().form_str_message("билет лотереи уже был куплен")
+
+
+__all__ = (
+    "APIError",
+    "IDNotFound",
+    "EmailNotFound",
+    "LoginNotFound",
+    "IDAlreadyExists",
+    "LoginAlreadyExists",
+    "BadRequest",
+    "InvalidRoute",
+    "NotEnoughBalance",
+    "SubZeroInput",
+    "MediaNotFound",
+    "InvalidUserName",
+    "InvalidUserLogin",
+    "InvalidStoreName",
+    "InvalidStoreDescription",
+    "InvalidStoreItemName",
+    "InvalidStoreItemPrice",
+    "InvalidFPSDescrition",
+    "RegistrationEmailNotFound",
+    "NoPythonProcessesFound",
+    "DBReturnedAVoid",
+    "BadFireWallCheck",
+    "UserIsAlreadyAShopkeeper",
+    "LauncherFlagBlocked",
+    "LotteryTicketCantBePurchased"
+)

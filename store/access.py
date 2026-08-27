@@ -1,5 +1,5 @@
-from ..__exceptions__ import APIError
-from ..__config__ import CONFIGURATION
+from ..exceptions import APIError
+from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -18,7 +18,7 @@ async def get_list(storeID: str) -> list[int]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_list, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json["result"]
 
@@ -38,7 +38,7 @@ async def add(storeID: str, userID: int) -> None:
                 params={"storeID": storeID, "userID": userID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(add, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())
 
 
 async def remove(storeID: str, userID: int) -> None:
@@ -56,4 +56,4 @@ async def remove(storeID: str, userID: int) -> None:
                 params={"storeID": storeID, "userID": userID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(remove, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())

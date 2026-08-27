@@ -3,8 +3,8 @@ from aiohttp import ClientSession, TCPConnector
 from hashlib import sha256
 
 from .scripts import random_data
-from ..__config__ import CONFIGURATION
-from ..__exceptions__ import APIError
+from ..config import CONFIGURATION
+from ..exceptions import APIError
 
 
 async def main() -> tuple[str, str]:
@@ -24,6 +24,6 @@ async def main() -> tuple[str, str]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(main, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json["hash"], data_hash

@@ -1,5 +1,5 @@
-from ..__config__ import CONFIGURATION
-from ..__exceptions__ import APIError
+from ..config import CONFIGURATION
+from ..exceptions import APIError
 from ..scripts.sender import create_session
 
 
@@ -30,7 +30,7 @@ async def get(ID: str) -> dict[str, ...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json
 
@@ -50,7 +50,7 @@ async def get_by_shopkeeper(ID: int) -> str:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_by_shopkeeper, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json['storeID']
 
@@ -66,7 +66,7 @@ async def get_all_ids() -> list[str]:
         async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/info/all/stores") as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_all_ids, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json['ids']
 
@@ -82,6 +82,6 @@ async def get_all_shopkeepers() -> list[int]:
         async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/info/all/shopkeepers") as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get_all_shopkeepers, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json['ids']

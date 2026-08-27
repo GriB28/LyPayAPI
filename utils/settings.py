@@ -1,5 +1,5 @@
-from ..__config__ import CONFIGURATION
-from ..__exceptions__ import APIError
+from ..config import CONFIGURATION
+from ..exceptions import APIError
 from ..scripts.sender import create_session
 
 
@@ -18,6 +18,6 @@ async def get(key: str):
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(get, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json['result']

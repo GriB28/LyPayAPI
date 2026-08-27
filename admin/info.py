@@ -1,8 +1,8 @@
 from psutil import cpu_percent as CPU, virtual_memory as RAM, process_iter
 from platform import system as get_platform_name
 
-from ..__exceptions__ import APIError
-from ..__config__ import CONFIGURATION
+from ..exceptions import APIError
+from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 _platform_name = get_platform_name()
@@ -29,7 +29,7 @@ async def core_machine() -> dict[str, ...]:
         async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/machine") as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(core_machine, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json
 
@@ -46,7 +46,7 @@ def local_machine() -> dict[str, ...]:
         if running_process.name() in ("python", "python3", "python.exe") and len(running_process.cmdline()) > 0:
             python_processes.append(running_process)
     if len(python_processes) == 0:
-        raise APIError.get(local_machine, 404, {"error": "NameError", "message": "no python processes found"})
+        raise APIError.get(404, {"error": "NameError", "message": "no python processes found"})
 
     r = RAM()
     return {
@@ -76,7 +76,7 @@ async def db_query(db_type: str, query: str) -> list[...]:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(db_query, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json["result"]
 
@@ -96,6 +96,6 @@ async def is_high(userID: int) -> bool:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(is_high, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json["result"]

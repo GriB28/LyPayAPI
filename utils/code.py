@@ -13,3 +13,6 @@ def generate(length: int = 24) -> str:
     """
 
     return ''.join(r_choice(alphabet) for _ in range(length))
+
+
+__all__ = ("generate",)

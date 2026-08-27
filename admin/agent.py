@@ -1,5 +1,5 @@
-from ..__exceptions__ import APIError
-from ..__config__ import CONFIGURATION
+from ..exceptions import APIError
+from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -18,7 +18,7 @@ async def is_agent(userID: int) -> bool:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(is_agent, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json["result"]
 
@@ -42,7 +42,7 @@ async def deposit(userID: int, amount: int, agentID: int) -> None:
                 params={"userID": userID, "amount": amount, "agentID": agentID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(deposit, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())
 
 
 async def deposit_store(auctionID: int, amount: int, agentID: int) -> None:
@@ -61,4 +61,4 @@ async def deposit_store(auctionID: int, amount: int, agentID: int) -> None:
                 params={"auctionID": auctionID, "amount": amount, "agentID": agentID}
         ) as response:
             if response.status >= 400:
-                raise APIError.get(deposit_store, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())

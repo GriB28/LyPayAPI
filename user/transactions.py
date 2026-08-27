@@ -1,5 +1,5 @@
-from ..__exceptions__ import APIError
-from ..__config__ import CONFIGURATION
+from ..exceptions import APIError
+from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -35,7 +35,7 @@ async def transfer(ID_out: int, ID_in: int | str, amount: int) -> None:
                 params=payload
         ) as response:
             if response.status >= 400:
-                raise APIError.get(transfer, response.status, await response.json())
+                raise APIError.get(response.status, await response.json())
 
 
 async def transfer_history(ID_out: int | None = None, ID_in: int | None = None) -> list:
@@ -66,7 +66,7 @@ async def transfer_history(ID_out: int | None = None, ID_in: int | None = None) 
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(transfer_history, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json['result']
 
@@ -87,7 +87,7 @@ async def deposit_history(ID: int) -> list:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(deposit_history, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json['result']
 
@@ -108,6 +108,6 @@ async def cheque_history(ID: int) -> list:
         ) as response:
             json = await response.json()
             if response.status >= 400:
-                raise APIError.get(cheque_history, response.status, json)
+                raise APIError.get(response.status, json)
 
             return json['result']
