@@ -1,13 +1,22 @@
+from inspect import currentframe
+
+
 class APIError(Exception):
-    def __init__(self, method, response: int, json: dict | None = None):
+    def __init__(self, response: int | None = None, json: dict | None = None):
         """
         Класс ошибки API
 
-        :param method: метод/функция библиотеки
         :param response: HTTP-код ответа от API
+        :param json: JSON ответ от API
         """
-        self.method = method.__module__ + '.' + method.__name__
-        self.status_code = response
+
+        frame = currentframe().f_back
+        if hasattr(frame.f_code, 'co_qualname'):
+            self.method = frame.f_code.co_qualname
+        else:
+            self.method = frame.f_code.co_name
+
+        self.status_code = response if response is not None else 0
         self.error_code = json["error"] if json is not None and "error" in json.keys() else "unknown"
         self.message = json["message"] if json is not None and "message" in json.keys() else None
 
@@ -24,86 +33,85 @@ class APIError(Exception):
 """
 
     @classmethod
-    def get(cls, method, response: int, json: dict | None = None) -> APIError:
+    def get(cls, response: int | None = None, json: dict | None = None) -> APIError:
         """
         Автоматический определитель конкретной ошибки
 
-        :param method: метод/функция библиотеки
         :param response: HTTP-код ответа от API
         :param json: ответ от API в формате JSON
         :return: экземпляр APIError
         """
 
-        if json is None or 'message' not in json.keys():
+        if json is None or response is None or 'message' not in json.keys():
             pass
 
         elif json['message'] == 'bad parsing':
-            return BadRequest(method, response, json)
+            return BadRequest(response, json)
 
         elif json['message'] == 'invalid route':
-            return InvalidRoute(method, response, json)
+            return InvalidRoute(response, json)
 
         elif json['message'] == 'email not found':
-            return EmailNotFound(method, response, json)
+            return EmailNotFound(response, json)
 
         elif json['message'] == 'ID not found':
-            return IDNotFound(method, response, json)
+            return IDNotFound(response, json)
         elif json['message'] == 'ID already exists':
-            return IDAlreadyExists(method, response, json)
+            return IDAlreadyExists(response, json)
 
         elif json['message'] == 'login not found':
-            return LoginNotFound(method, response, json)
+            return LoginNotFound(response, json)
         elif json['message'] == 'login already exists':
-            return LoginAlreadyExists(method, response, json)
+            return LoginAlreadyExists(response, json)
 
         elif json['message'] == 'not enough balance':
-            return NotEnoughBalance(method, response, json)
+            return NotEnoughBalance(response, json)
         elif json['message'] == 'subzero input':
-            return SubZeroInput(method, response, json)
+            return SubZeroInput(response, json)
 
         elif json['message'] == 'avatar not found':
-            return MediaNotFound(method, response, json)
+            return MediaNotFound(response, json)
 
         elif json['message'] == 'bad censor flag: user name':
-            return InvalidUserName(method, response, json)
+            return InvalidUserName(response, json)
         elif json['message'] == 'bad censor flag: login':
-            return InvalidUserLogin(method, response, json)
+            return InvalidUserLogin(response, json)
 
         elif json['message'] == 'bad censor flag: store name':
-            return InvalidStoreName(method, response, json)
+            return InvalidStoreName(response, json)
         elif json['message'] == 'bad censor flag: store desc':
-            return InvalidStoreDescription(method, response, json)
+            return InvalidStoreDescription(response, json)
 
         elif json['message'] == 'bad censor flag: store item name':
-            return InvalidStoreItemName(method, response, json)
+            return InvalidStoreItemName(response, json)
         elif json['message'] == 'bad censor flag: store item price':
-            return InvalidStoreItemPrice(method, response, json)
+            return InvalidStoreItemPrice(response, json)
 
         elif json['message'] == 'bad censor flag: FPS desc':
-            return InvalidFPSDescrition(method, response, json)
+            return InvalidFPSDescrition(response, json)
 
         elif json['message'] == 'link email not found':
-            return RegistrationEmailNotFound(method, response, json)
+            return RegistrationEmailNotFound(response, json)
 
         elif json['message'] == 'no python processes found':
-            return NoPythonProcessesFound(method, response, json)
+            return NoPythonProcessesFound(response, json)
 
         elif json['message'] == 'db returned a void':
-            return DBReturnedAVoid(method, response, json)
+            return DBReturnedAVoid(response, json)
 
         elif json['message'] == 'bad fw check':
-            return BadFireWallCheck(method, response, json)
+            return BadFireWallCheck(response, json)
 
         elif json['message'] == 'user is already a shopkeeper':
-            return UserIsAlreadyAShopkeeper(method, response, json)
+            return UserIsAlreadyAShopkeeper(response, json)
 
         elif json['message'] == 'launcher flag blocked':
-            return LauncherFlagBlocked(method, response, json)
+            return LauncherFlagBlocked(response, json)
 
         elif json['message'] == 'ticket has already been purchased':
-            return LotteryTicketCantBePurchased(method, response, json)
+            return LotteryTicketCantBePurchased(response, json)
 
-        return cls(method, response, json)
+        return cls(response, json)
 
 
 class IDNotFound(APIError):
