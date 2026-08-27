@@ -1,5 +1,4 @@
 from ..exceptions import APIError
-from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -13,7 +12,7 @@ async def lottery(ID: str) -> None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/auc/lottery",
+                "/auc/lottery",
                 params={"ID": ID}
         ) as response:
             if response.status >= 400:

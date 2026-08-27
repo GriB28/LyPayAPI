@@ -1,5 +1,4 @@
 from ..exceptions import APIError
-from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -13,7 +12,7 @@ async def get_list(storeID: str) -> list[int]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/access/list",
+                "/store/access/list",
                 params={"storeID": storeID}
         ) as response:
             json = await response.json()
@@ -34,7 +33,7 @@ async def add(storeID: str, userID: int) -> None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/access/add",
+                "/store/access/add",
                 params={"storeID": storeID, "userID": userID}
         ) as response:
             if response.status >= 400:
@@ -52,7 +51,7 @@ async def remove(storeID: str, userID: int) -> None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/access/rem",
+                "/store/access/rem",
                 params={"storeID": storeID, "userID": userID}
         ) as response:
             if response.status >= 400:

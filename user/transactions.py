@@ -1,5 +1,4 @@
 from ..exceptions import APIError
-from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -31,7 +30,7 @@ async def transfer(ID_out: int, ID_in: int | str, amount: int) -> None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/transfer",
+                "/user/transfer",
                 params=payload
         ) as response:
             if response.status >= 400:
@@ -61,7 +60,7 @@ async def transfer_history(ID_out: int | None = None, ID_in: int | None = None) 
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/transfer_list",
+                "/user/transfer_list",
                 params={"ID_out": ID_out} if ID_out is not None else {"ID_in": ID_in}
         ) as response:
             json = await response.json()
@@ -82,7 +81,7 @@ async def deposit_history(ID: int) -> list:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/deposit_list",
+                "/user/deposit_list",
                 params={"ID": ID}
         ) as response:
             json = await response.json()
@@ -103,7 +102,7 @@ async def cheque_history(ID: int) -> list:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/cheque_list",
+                "/user/cheque_list",
                 params={"ID": ID}
         ) as response:
             json = await response.json()

@@ -1,4 +1,3 @@
-from ..config import CONFIGURATION
 from ..exceptions import APIError
 from ..scripts.sender import create_session
 
@@ -14,7 +13,7 @@ async def pay(fpsID: str, userID: int) -> str | None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/fps/pay",
+                "/fps/pay",
                 params={"fpsID": fpsID, "userID": userID}
         ) as response:
             json = await response.json()

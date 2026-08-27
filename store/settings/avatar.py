@@ -27,7 +27,7 @@ async def get(ID: str) -> tuple[str, bool] | None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/avatar/get",
+                "/store/settings/avatar/get",
                 params=payload
         ) as response:
             if "json" in response.content_type:
@@ -70,7 +70,7 @@ async def update(ID: str, media_path: str):
 
     async with create_session() as session:
         async with session.post(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/avatar/upd",
+                "/store/settings/avatar/upd",
                 params={"ID": ID},
                 data=form
         ) as response:
@@ -88,7 +88,7 @@ async def delete(ID: str):
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/avatar/remove",
+                "/store/settings/avatar/remove",
                 params={"ID": ID}
         ) as response:
             if response.status >= 400:

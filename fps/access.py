@@ -1,4 +1,3 @@
-from ..config import CONFIGURATION
 from ..exceptions import APIError
 from ..scripts.sender import create_session
 
@@ -22,7 +21,7 @@ async def new(*, description: str | None = None, amount: int, author: str | int)
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/fps/new",
+                "/fps/new",
                 params=payload,
         ) as response:
             json = await response.json()
@@ -43,7 +42,7 @@ async def cancel(ID: str) -> None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/fps/cancel",
+                "/fps/cancel",
                 params={'ID': ID}
         ) as response:
             if response.status >= 400:

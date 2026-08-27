@@ -1,5 +1,4 @@
 from ..exceptions import APIError
-from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -21,7 +20,7 @@ async def get(ID: str) -> dict[str, ...]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/items/get",
+                "/store/items/get",
                 params={"itemID": ID}
         ) as response:
             json = await response.json()
@@ -42,7 +41,7 @@ async def get_all(storeID: str, active_filter: bool = True) -> list[str]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/items/all",
+                "/store/items/all",
                 params={"storeID": storeID, "active_filter": int(active_filter)}
         ) as response:
             json = await response.json()
@@ -64,7 +63,7 @@ async def add(storeID: str, name: str, price: int) -> str:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/items/add",
+                "/store/items/add",
                 params={"storeID": storeID, "name": name, "price": price}
         ) as response:
             json = await response.json()
@@ -84,7 +83,7 @@ async def remove(itemID: str) -> None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/items/rem",
+                "/store/items/rem",
                 params={"itemID": itemID}
         ) as response:
             if response.status >= 400:
@@ -113,7 +112,7 @@ async def edit(itemID: str, name: str | None = None, price: int | None = None) -
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/items/edit",
+                "/store/items/edit",
                 params=payload
         ) as response:
             json = await response.json()

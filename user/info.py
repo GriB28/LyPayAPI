@@ -29,7 +29,7 @@ async def get(ID: int) -> dict[str, ...]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/get",
+                "/user/get",
                 params={"ID": ID}
         ) as response:
             json = await response.json()
@@ -61,7 +61,7 @@ async def get_by_email(email: str) -> dict[str, ...]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/get",
+                "/user/get",
                 params={"email": email}
         ) as response:
             json = await response.json()
@@ -93,7 +93,7 @@ async def get_by_login(login: str) -> dict[str, ...]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/get",
+                "/user/get",
                 params={"login": login}
         ) as response:
             json = await response.json()
@@ -111,7 +111,7 @@ async def get_all() -> list[int]:
     """
 
     async with create_session() as session:
-        async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/all") as response:
+        async with session.get("/user/all") as response:
             json = await response.json()
             if response.status >= 400:
                 raise APIError.get(response.status, json)
@@ -126,7 +126,7 @@ async def _request_qr(ID: int, path: str) -> None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/qr/get",
+                "/user/qr/get",
                 params={"ID": ID}
         ) as response:
             if response.status >= 400:
@@ -147,7 +147,7 @@ async def qr(ID: int) -> str:
     if exists(path):
         async with create_session() as session:
             async with session.get(
-                    f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/qr/check",
+                    "/user/qr/check",
                     params={"ID": ID, "unix": getmtime(path)}
             ) as response:
                 json = await response.json()

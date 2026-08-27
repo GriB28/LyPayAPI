@@ -19,7 +19,7 @@ async def main() -> tuple[str, str]:
 
     async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.post(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/mst/test1",
+                "/mst/test1",
                 data=data
         ) as response:
             json = await response.json()

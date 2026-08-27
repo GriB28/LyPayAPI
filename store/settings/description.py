@@ -1,5 +1,4 @@
 from ...exceptions import APIError
-from ...config import CONFIGURATION
 from ...scripts.sender import create_session
 
 
@@ -13,7 +12,7 @@ async def get(ID: str) -> str:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/desc/get",
+                "/store/settings/desc/get",
                 params={"ID": ID}
         ) as response:
             json = await response.json()
@@ -34,7 +33,7 @@ async def update(ID: str, new: str):
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/settings/desc/upd",
+                "/store/settings/desc/upd",
                 params={"ID": ID, "new": new}
         ) as response:
             if response.status >= 400:

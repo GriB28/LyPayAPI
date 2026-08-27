@@ -25,7 +25,7 @@ async def get(chequeID: str) -> dict[str, ...]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/cheques/get",
+                "/store/cheques/get",
                 params={"chequeID": chequeID}
         ) as response:
             json = await response.json()
@@ -47,7 +47,7 @@ async def get_all(storeID: str, active_filter: bool = True) -> list[str]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/cheques/all",
+                "/store/cheques/all",
                 params={"storeID": storeID, "active_filter": int(active_filter)}
         ) as response:
             json = await response.json()
@@ -74,7 +74,7 @@ async def create(storeID: str, customer: int, items: dict[str, int]) -> str:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/cheques/add",
+                "/store/cheques/add",
                 params=payload
         ) as response:
             json = await response.json()
@@ -94,7 +94,7 @@ async def cancel(chequeID: str) -> None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/cheques/de",
+                "/store/cheques/de",
                 params={"chequeID": chequeID}
         ) as response:
             if response.status >= 400:

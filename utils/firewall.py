@@ -1,4 +1,3 @@
-from ..config import CONFIGURATION
 from ..exceptions import APIError, IDNotFound
 from ..scripts.sender import create_session
 
@@ -41,7 +40,7 @@ async def entries(ID: int, route: str) -> list[dict[str, ...]]:
     route = route.strip().lower()
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/fw/{route}",
+                f"/fw/{route}",
                 params={"ID": ID}
         ) as response:
             json = await response.json()

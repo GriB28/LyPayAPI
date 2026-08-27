@@ -15,7 +15,7 @@ async def check_link(link: str) -> str:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/store/info/link",
+                "/store/info/link",
                 params={"link": link}
         ) as response:
             json = await response.json()
@@ -33,7 +33,7 @@ async def get_ID() -> str:
     """
 
     async with create_session() as session:
-        async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/store_id") as response:
+        async with session.get("/reg/store_id") as response:
             json = await response.json()
             if response.status >= 400:
                 raise APIError.get(response.status, json)
@@ -61,7 +61,7 @@ async def send_email(participant: str, code: str | None = None, keys: dict[str, 
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/email/send",
+                "/reg/email/send",
                 params=payload
         ) as response:
             if response.status >= 400:
@@ -81,7 +81,7 @@ async def new(*, storeID: str, name: str, hostID: int, link: str) -> None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/store",
+                "/reg/store",
                 params={
                     "storeID": storeID,
                     "name": name,

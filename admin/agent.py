@@ -1,5 +1,4 @@
 from ..exceptions import APIError
-from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -13,7 +12,7 @@ async def is_agent(userID: int) -> bool:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/agent/check",
+                "/admin/agent/check",
                 params={"userID": userID}
         ) as response:
             json = await response.json()
@@ -38,7 +37,7 @@ async def deposit(userID: int, amount: int, agentID: int) -> None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/agent/deposit",
+                "/admin/agent/deposit",
                 params={"userID": userID, "amount": amount, "agentID": agentID}
         ) as response:
             if response.status >= 400:
@@ -57,7 +56,7 @@ async def deposit_store(auctionID: int, amount: int, agentID: int) -> None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/agent/deposit_auc",
+                "/admin/agent/deposit_auc",
                 params={"auctionID": auctionID, "amount": amount, "agentID": agentID}
         ) as response:
             if response.status >= 400:

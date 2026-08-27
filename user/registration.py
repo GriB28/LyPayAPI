@@ -21,7 +21,7 @@ async def check_email_record(email: str) -> dict[str, ...]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/email/corp_record",
+                "/reg/email/corp_record",
                 params={"email": email}
         ) as response:
             json = await response.json()
@@ -52,7 +52,7 @@ async def send_email(route: str, participant: str, code: str | None = None, keys
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/email/send",
+                "/reg/email/send",
                 params=payload
         ) as response:
             if response.status >= 400:
@@ -71,7 +71,7 @@ async def check_code(email: str, code: str, route: str = 'main') -> bool:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/user/code",
+                "/user/code",
                 params={"code": code, "route": route}
         ) as response:
             json = await response.json()
@@ -107,7 +107,7 @@ async def new(*, name: str, login: str | None, password: str | None, group: str,
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/reg/user",
+                "/reg/user",
                 params=payload
         ) as response:
             json = await response.json()

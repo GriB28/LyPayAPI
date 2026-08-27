@@ -1,8 +1,5 @@
 from aiohttp import ClientSession, TCPConnector
 
-from os import urandom
-from hashlib import sha256
-
 from ..config import CONFIGURATION
 from ..exceptions import APIError
 
@@ -21,7 +18,7 @@ async def main(ID: int):
 
     async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/mst/test3",
+                "/mst/test3",
                 params={"ID": ID}
         ) as response:
             if response.status >= 400:
@@ -39,7 +36,7 @@ async def end(ID: int) -> tuple[int, int]:
 
     async with ClientSession(connector=TCPConnector(ssl=CONFIGURATION.SSL)) as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/mst/test3_end",
+                "/mst/test3_end",
                 params={"ID": ID}
         ) as response:
             json = await response.json()

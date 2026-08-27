@@ -2,7 +2,6 @@ from psutil import cpu_percent as CPU, virtual_memory as RAM, process_iter
 from platform import system as get_platform_name
 
 from ..exceptions import APIError
-from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 _platform_name = get_platform_name()
@@ -26,7 +25,7 @@ async def core_machine() -> dict[str, ...]:
     """
 
     async with create_session() as session:
-        async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/machine") as response:
+        async with session.get("/admin/machine") as response:
             json = await response.json()
             if response.status >= 400:
                 raise APIError.get(response.status, json)
@@ -71,7 +70,7 @@ async def db_query(db_type: str, query: str) -> list[...]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/db",
+                "/admin/db",
                 params={"db_type": db_type, "query": query}
         ) as response:
             json = await response.json()
@@ -91,7 +90,7 @@ async def is_high(userID: int) -> bool:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/admin/check_high",
+                "/admin/check_high",
                 params={"userID": userID}
         ) as response:
             json = await response.json()

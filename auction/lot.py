@@ -1,5 +1,4 @@
 from ..exceptions import APIError
-from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -20,7 +19,7 @@ async def add(name: str, price: int, auctionID: int, lotID: int | None = None) -
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/auc/lot/add",
+                "/auc/lot/add",
                 params=payload
         ) as response:
             json = await response.json()
@@ -40,7 +39,7 @@ async def confirm(lotID: int) -> None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/auc/lot/confirm",
+                "/auc/lot/confirm",
                 params={"lotID": lotID}
         ) as response:
             if response.status >= 400:
@@ -65,7 +64,7 @@ async def all_lots(storeID: str) -> list[dict[str, ...]]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/auc/lot/list",
+                "/auc/lot/list",
                 params={"storeID": storeID}
         ) as response:
             json = await response.json()

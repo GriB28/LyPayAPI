@@ -1,4 +1,3 @@
-from ..config import CONFIGURATION
 from ..exceptions import APIError
 from ..scripts.sender import create_session
 
@@ -24,7 +23,7 @@ async def status(ID: str) -> dict[str, ...]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/fps/status",
+                "/fps/status",
                 params={"ID": ID}
         ) as response:
             json = await response.json()

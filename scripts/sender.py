@@ -3,7 +3,7 @@ from ..config import CONFIGURATION
 
 
 class CustomSession(ClientSession):
-    def __init__(self, *args, extra: dict | None = None, **kwargs):
+    def __init__(self, *args, extra: dict | None = None, full_url: bool = False, **kwargs):
         """
         Кастомная сессия, которая добавляет заданные query-параметры ко всем запросам
 
@@ -13,8 +13,11 @@ class CustomSession(ClientSession):
         """
         super().__init__(*args, **kwargs)
         self._extra_params = extra if extra is not None else dict()
+        self._full_url = full_url
 
     async def _request(self, method, url, **kwargs):
+        if self._full_url:
+            url = f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}" + url
         params = kwargs.get('params')
 
         if params is not None:

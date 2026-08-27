@@ -1,5 +1,4 @@
 from ..exceptions import APIError
-from ..config import CONFIGURATION
 from ..scripts.sender import create_session
 
 
@@ -19,7 +18,7 @@ async def get_all() -> list[dict[str, ...]]:
     """
 
     async with create_session() as session:
-        async with session.get(f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/promo/all") as response:
+        async with session.get("/promo/all") as response:
             json = await response.json()
             if response.status >= 400:
                 raise APIError(response.status, json)
@@ -45,7 +44,7 @@ async def get(ID: str) -> dict[str, ...]:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/promo/get",
+                "/promo/get",
                 params={"ID": ID}
         ) as response:
             json = await response.json()
@@ -67,7 +66,7 @@ async def add(ID: str, value: int, author: str) -> None:
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/promo/add",
+                "/promo/add",
                 params={
                     "ID": ID,
                     "value": value,
@@ -102,7 +101,7 @@ async def edit(ID: str, value: int | None = None, author: str | None = None, act
 
     async with create_session() as session:
         async with session.get(
-                f"{CONFIGURATION.HOST}:{CONFIGURATION.PORT}/promo/edit",
+                "/promo/edit",
                 params=payload
         ) as response:
             if response.status >= 400:
