@@ -21,6 +21,6 @@ class CONFIGURATION:
     SSL.verify_mode = CERT_NONE
 
 
-VERSION = "v3.0a"
-NAME = "Release 3"
-BUILD = 23
+VERSION = "v3.1a"
+NAME = "Release 3: global fixes"
+BUILD = 24
